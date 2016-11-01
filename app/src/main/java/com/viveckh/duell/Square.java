@@ -14,12 +14,13 @@ public class Square {
     private int column;
 
     // Occupancy status, not occupied if the pointer is null
-    private Dice resident = new Dice();
+    private Dice resident;
 
     // Default Constructor
     public Square() {
         row = 0;
         column = 0;
+        resident = new Dice();
         resident = null;
     }
 
@@ -28,6 +29,17 @@ public class Square {
         this(); // Calling default constructor
         this.row = row;
         this.column = column;
+    }
+
+    public Square(Square anotherOne) {
+        this.row = anotherOne.row;
+        this.column = anotherOne.column;
+        if (anotherOne.resident != null) {
+            resident = new Dice(anotherOne.resident);
+        }
+        else {
+            resident = null;
+        }
     }
 
     //ACCESSORS

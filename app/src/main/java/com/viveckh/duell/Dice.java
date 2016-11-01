@@ -51,6 +51,20 @@ public class Dice {
         SetKing(king);
     }
 
+    public Dice(Dice anotherOne) {
+        this.row = anotherOne.row;
+        this.column = anotherOne.column;
+        this.top = anotherOne.top;
+        this.bottom = anotherOne.bottom;
+        this.front = anotherOne.front;
+        this.rear = anotherOne.rear;
+        this.left = anotherOne.left;
+        this.right = anotherOne.right;
+        this.king = anotherOne.king;
+        this.botOperated = anotherOne.botOperated;
+        this.captured = anotherOne.captured;
+    }
+
     // ACCESSORS
 
     // Getters for the coordinates

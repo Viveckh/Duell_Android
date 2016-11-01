@@ -62,6 +62,22 @@ public class Board {
         }
     }
 
+    // Copy Constructor
+    public Board(Board anotherOne) {
+        // Copying all the player dice
+        for (int index = 0; index < 9; index++) {
+            humans[index] = new Dice(anotherOne.humans[index]);
+            bots[index] = new Dice(anotherOne.bots[index]);
+        }
+
+        // Copying the squares in the board
+        for (int currentRow = 0; currentRow < 8; currentRow++) {
+            for(int currentCol = 0; currentCol < 9; currentCol++) {
+                gameBoard[currentRow][currentCol] = new Square(anotherOne.gameBoard[currentRow][currentCol]);
+            }
+        }
+    }
+
     // SELECTORS
     // Checks if a square in the gameboard is occupied with dice
     public boolean IsSquareOccupied(int row, int col) {

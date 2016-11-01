@@ -14,6 +14,21 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         board = new Board();
+        DrawBoard(board);
+        Player player = new Player();
+        player.MakeAMove(0, 0, 1, 4, board, false);
+        DrawBoard(board);
+        player.MakeAMove(0, 4, 1, 4, board, false);
+        DrawBoard(board);
+        player.MakeAMove(7, 3, 4, 6, board, false);
+        DrawBoard(board);
+        player.MakeAMove(4, 6, 1, 4, board, false);
+        DrawBoard(board);
+        player.MakeAMove(0, 4, 1, 4, board, false);
+        DrawBoard(board);
+    }
+
+    public void DrawBoard(Board board) {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 9; col++) {
                 // Subtracting from a constant to print an inverted model in the view
@@ -21,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
 
                 // Determining the text of the button
                 String button_Text = "";
-                if (board.GetSquareResident(model_row, col) != null) {
+                if (board.IsSquareOccupied(model_row, col)) {
                     if (board.GetSquareResident(model_row, col).IsBotOperated()) {
                         button_Text = "C" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetLeft();
                     }
