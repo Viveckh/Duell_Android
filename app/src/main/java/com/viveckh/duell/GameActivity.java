@@ -15,16 +15,20 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         board = new Board();
         DrawBoard(board);
-        Player player = new Player();
-        player.MakeAMove(0, 0, 1, 4, board, false);
-        DrawBoard(board);
-        player.MakeAMove(0, 4, 1, 4, board, false);
-        DrawBoard(board);
-        player.MakeAMove(7, 3, 4, 6, board, false);
-        DrawBoard(board);
-        player.MakeAMove(4, 6, 1, 4, board, false);
-        DrawBoard(board);
-        player.MakeAMove(0, 4, 1, 4, board, false);
+        Human human = new Human();
+        Computer computer = new Computer();
+
+        computer.Play(board, false);
+        human.Play(0, 0, 1, 4, board);
+        computer.Play(board, false);
+        human.Play(1, 4, 4, 4, board);
+        computer.Play(board, false);
+        human.Play(0, 5, 3, 8, board);
+        computer.Play(board, false);
+        human.Play(4, 4, 7, 2, board);
+        computer.Play(board, false);
+        human.Play(0, 8, 2, 5, board);
+        computer.Play(board, false);
         DrawBoard(board);
     }
 
