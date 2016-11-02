@@ -2,12 +2,20 @@ package com.viveckh.duell;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 public class GameActivity extends AppCompatActivity {
 
+    // Declaring instances of objects and class variables
     Board board;
+    Human human;
+    Computer computer;
+
     final public int TROWS = 8;
+    private boolean hasUserInitiatedMove = false;
+
+    int startRow, startCol, endRow, endCol;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,9 +23,9 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         board = new Board();
         DrawBoard(board);
-        Human human = new Human();
-        Computer computer = new Computer();
-
+        human = new Human();
+        computer = new Computer();
+        /*
         computer.Play(board, false);
         human.Play(0, 0, 1, 4, board);
         computer.Play(board, false);
@@ -30,8 +38,46 @@ public class GameActivity extends AppCompatActivity {
         human.Play(0, 8, 2, 5, board);
         computer.Play(board, false);
         DrawBoard(board);
+        */
     }
 
+    // Processes the user input
+    public void ProcessUserMove(View view) {
+        // Get the details of the pressed button
+        String buttonDetails = view.getTag().toString();
+        int btnRow = Integer.parseInt(buttonDetails.split(",")[0]);
+        int btnColumn = Integer.parseInt(buttonDetails.split(",")[1]);
+        System.out.println(btnRow);
+        System.out.println(btnColumn);
+
+        // If move hasn't been initiated, consider the just clicked button as starting point
+        if (!hasUserInitiatedMove) {
+            startRow = TROWS - btnRow - 1;  //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
+            startCol = btnColumn;
+            hasUserInitiatedMove = true;
+            System.out.println(startRow + "" + startCol);
+            //Call function to highlight that button
+            return;
+        }
+
+        // If the move has already been initiated, then consider the just clicked button as end point
+        // and make the move
+        if (hasUserInitiatedMove) {
+            endRow = TROWS - btnRow - 1;
+            endCol = btnColumn;
+            System.out.println(endRow + "" + endCol);
+            if (human.Play(startRow, startCol, endRow, endCol, board)) {
+                System.out.println("Made the move successfully");
+                computer.Play(board, false);
+            }
+            DrawBoard(board);
+            hasUserInitiatedMove = false;
+            return;
+        }
+    }
+
+
+    // Updates the board view based on the current state of the game
     public void DrawBoard(Board board) {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 9; col++) {
@@ -56,4 +102,8 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+
 }
