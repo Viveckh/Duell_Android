@@ -3,19 +3,27 @@ package com.viveckh.duell;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 
 public class GameActivity extends AppCompatActivity {
 
     // Declaring instances of objects and class variables
-    Board board;
-    Human human;
-    Computer computer;
+    private Board board;
+    private Human human;
+    private Computer computer;
 
     final public int TROWS = 8;
     private boolean hasUserInitiatedMove = false;
 
-    int startRow, startCol, endRow, endCol;
+    private int startRow, startCol, endRow, endCol;
+    private boolean humanTurn = false;
+    private boolean computerTurn = false;
+
+    // View elements
+    private View origin, destination;   // Start and end squares in the display board, from view perspective
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +33,9 @@ public class GameActivity extends AppCompatActivity {
         DrawBoard(board);
         human = new Human();
         computer = new Computer();
+
+        //Temporary additions until bundle data is passed from previous action
+        humanTurn = true;
         /*
         computer.Play(board, false);
         human.Play(0, 0, 1, 4, board);
@@ -43,37 +54,103 @@ public class GameActivity extends AppCompatActivity {
 
     // Processes the user input
     public void ProcessUserMove(View view) {
+        // Human player can't make moves if it is not his turn
+        if (!humanTurn) {
+            return;
+        }
+
+        // Animate the pressed button
+
         // Get the details of the pressed button
         String buttonDetails = view.getTag().toString();
         int btnRow = Integer.parseInt(buttonDetails.split(",")[0]);
         int btnColumn = Integer.parseInt(buttonDetails.split(",")[1]);
-        System.out.println(btnRow);
-        System.out.println(btnColumn);
 
         // If move hasn't been initiated, consider the just clicked button as starting point
         if (!hasUserInitiatedMove) {
+            origin = view;
             startRow = TROWS - btnRow - 1;  //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
             startCol = btnColumn;
             hasUserInitiatedMove = true;
-            System.out.println(startRow + "" + startCol);
             //Call function to highlight that button
+
+            // Set the button viewable in pressed state, so it is easy to identify. Undo when the destination is picked
+            SetAButtonPress(origin, true);
             return;
         }
 
         // If the move has already been initiated, then consider the just clicked button as end point
         // and make the move
         if (hasUserInitiatedMove) {
-            endRow = TROWS - btnRow - 1;
+            destination = view;
+            endRow = TROWS - btnRow - 1;    //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
             endCol = btnColumn;
-            System.out.println(endRow + "" + endCol);
+
+            // Make the move and, if successful, transfer the controls to the computer
             if (human.Play(startRow, startCol, endRow, endCol, board)) {
-                System.out.println("Made the move successfully");
-                computer.Play(board, false);
+                DrawBoard(board);
+                HighlightAMove(origin, destination);
+
+                // Transfer control to computer and let it make a move
+                humanTurn = false;
+                computerTurn = true;
+                ProcessComputerMove();
+
             }
-            DrawBoard(board);
             hasUserInitiatedMove = false;
             return;
         }
+    }
+
+    public void ProcessComputerMove() {
+        // return if not computer's turn
+        if (!computerTurn) {
+            return;
+        }
+        // Process computer move and transfer controls to human
+        computer.Play(board, false);
+        DrawBoard(board);
+
+        computerTurn = false;
+        humanTurn = true;
+    }
+
+    public void SetAButtonPress(View view, boolean state) {
+        /*
+        Button button = (Button)findViewById(view.getId());
+        view.setPressed(true);
+        */
+    }
+
+    public void HighlightAMove(View origin, View destination) {
+        // Unpress buttons if they were pressed earlier for easy identification purposes
+        SetAButtonPress(origin, false);
+        SetAButtonPress(destination, false);
+
+        // Prepare the animation settings
+        Animation animation = new AlphaAnimation(1, 0);     // Change alpha from fully visible to invisible
+        animation.setDuration(200); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(6); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+
+        // Get the views to highlight and start animation
+        Button startPoint = (Button)findViewById(origin.getId());
+        Button endPoint = (Button)findViewById(destination.getId());
+
+        /*
+        // Setting listener to make main thread wait until animation is over
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                startPoint.setVisibility(View.VISIBLE);
+            }
+        });
+        */
+
+       // Start animation
+        startPoint.startAnimation(animation);
+        endPoint.startAnimation(animation);
     }
 
 
