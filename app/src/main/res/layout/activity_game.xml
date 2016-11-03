@@ -16,8 +16,8 @@
         android:layout_height="match_parent"
         android:id="@+id/boardGrid"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <Button
             android:layout_width="128dp"
@@ -811,24 +811,76 @@
             android:layout_column="8"
             android:onClick="ProcessUserMove" android:tag="7,8" />
 
-        <TextView
+        <RadioGroup
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:paddingLeft="7dp"
-            android:text="Next Player: "
-            android:id="@+id/txtView_static_player"
+            android:layout_height="106dp"
+            android:id="@+id/radioGrp_PathChoice"
             android:layout_row="8"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="133dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Select Path"
+                android:id="@+id/label_SelectPath"
+                android:layout_gravity="center_horizontal" />
+
+            <RadioButton
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:text="Vertical-First"
+                android:id="@+id/radio_vertical"
+                android:checked="false" />
+
+            <RadioButton
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:text="Lateral-First"
+                android:id="@+id/radio_lateral"
+                android:checked="false" />
+        </RadioGroup>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="122dp"
+            android:layout_height="71dp"
+            android:text="Help()"
+            android:id="@+id/btn_Help"
+            android:layout_row="8"
+            android:layout_column="2" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:paddingLeft="7dp"
-            android:text="Computer"
+            android:text="Computer&apos;s turn"
             android:id="@+id/txtView_nextPlayer"
+            android:textAlignment="center"
             android:layout_row="8"
-            android:layout_column="1" />
+            android:layout_column="3" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="128dp"
+            android:layout_height="70dp"
+            android:text="Bot.Play()"
+            android:id="@+id/btn_BotPlay"
+            android:layout_row="8"
+            android:layout_column="4"
+            android:onClick="ProcessComputerMove"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="124dp"
+            android:layout_height="74dp"
+            android:text="Serialize()"
+            android:id="@+id/btn_Serialize"
+            android:layout_row="8"
+            android:layout_column="8" />
+
     </GridLayout>
 </RelativeLayout>

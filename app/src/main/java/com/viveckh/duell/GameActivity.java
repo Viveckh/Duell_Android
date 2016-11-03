@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.RadioGroup;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -25,6 +26,9 @@ public class GameActivity extends AppCompatActivity {
     // View elements
     private View origin, destination;   // Start and end squares in the display board, from view perspective
 
+    // View components
+    RadioGroup radioGrp_PathChoice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,25 +38,14 @@ public class GameActivity extends AppCompatActivity {
         human = new Human();
         computer = new Computer();
 
+        radioGrp_PathChoice = (RadioGroup)findViewById(R.id.radioGrp_PathChoice);
+        SetRadioGroupListener();
+
         //Temporary additions until bundle data is passed from previous action
         humanTurn = true;
-        /*
-        computer.Play(board, false);
-        human.Play(0, 0, 1, 4, board);
-        computer.Play(board, false);
-        human.Play(1, 4, 4, 4, board);
-        computer.Play(board, false);
-        human.Play(0, 5, 3, 8, board);
-        computer.Play(board, false);
-        human.Play(4, 4, 7, 2, board);
-        computer.Play(board, false);
-        human.Play(0, 8, 2, 5, board);
-        computer.Play(board, false);
-        DrawBoard(board);
-        */
     }
 
-    // Processes the user input
+    // Processes the user input and passes over to finalize the move
     public void ProcessUserMove(View view) {
         // Human player can't make moves if it is not his turn
         if (!humanTurn) {
@@ -85,44 +78,99 @@ public class GameActivity extends AppCompatActivity {
             destination = view;
             endRow = TROWS - btnRow - 1;    //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
             endCol = btnColumn;
-
-            // Make the move and, if successful, transfer the controls to the computer
-            if (human.Play(startRow, startCol, endRow, endCol, board)) {
-                DrawBoard(board);
-                HighlightAMove(origin, destination);
-
-                // Transfer control to computer and let it make a move
-                humanTurn = false;
-                computerTurn = true;
-                ProcessComputerMove();
-
-            }
             hasUserInitiatedMove = false;
-            return;
+
+            // If path choice necessary, then wait for user action by activating radiobuttons; else continue towards finalizing move
+            if ((startRow != endRow) && (startCol != endCol)) {
+                //Display the radiobuttons for path choice and wait user action
+                radioGrp_PathChoice.setVisibility(View.VISIBLE);
+                return;
+            }
+            else {
+                FinalizeUserMove(0);    // Zero means no preference in path
+                return;
+            }
         }
     }
 
-    public void ProcessComputerMove() {
+    //After ProcessUserMove processes the user input, this actually takes the path choice into consideration and finalizes move
+    private void FinalizeUserMove(int pathChoice) {
+        // PathChoice 0 indicates no preference, 1 indicates vertical-first, and 2 indicates lateral-first
+
+        // Make the move and, if successful, transfer the controls to the computer
+        if (human.Play(startRow, startCol, endRow, endCol, board, pathChoice)) {
+            DrawBoard(board);
+            HighlightAMove(origin, destination);
+
+            // Transfer control to computer and let it make a move
+            humanTurn = false;
+            computerTurn = true;
+            // Reset Button Availability based on the Computer's turn next
+        }
+        resetButtonAvailability();
+        // Hide the path choice radiobuttons no matter whether the move is successful or not
+    }
+
+    private void SetRadioGroupListener() {
+        radioGrp_PathChoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_vertical:
+                        FinalizeUserMove(1);
+                        break;
+                    case R.id.radio_lateral:
+                        FinalizeUserMove(2);
+                        break;
+                }
+            }
+        });
+    }
+
+    // Processes the move of a computer
+    public void ProcessComputerMove(View view) {
         // return if not computer's turn
         if (!computerTurn) {
             return;
         }
-        // Process computer move and transfer controls to human
+        // Process computer move and draw the board
         computer.Play(board, false);
         DrawBoard(board);
 
+        // Transfer controls to human and disable the buttons for bot.play
         computerTurn = false;
         humanTurn = true;
+        resetButtonAvailability();
     }
 
-    public void SetAButtonPress(View view, boolean state) {
+    // Simulates a button press given the view
+    private void SetAButtonPress(View view, boolean state) {
         /*
         Button button = (Button)findViewById(view.getId());
         view.setPressed(true);
         */
     }
 
-    public void HighlightAMove(View origin, View destination) {
+    //Resets the various button availability in the view depending on whose turn it is
+    private void resetButtonAvailability() {
+        Button btn_BotPlay = (Button)findViewById(R.id.btn_BotPlay);
+        Button btn_Help = (Button)findViewById(R.id.btn_Help);
+
+        if (humanTurn) {
+            btn_Help.setVisibility(View.VISIBLE);
+            btn_BotPlay.setVisibility(View.INVISIBLE);
+        }
+        if (computerTurn) {
+            btn_Help.setVisibility(View.INVISIBLE);
+            btn_BotPlay.setVisibility(View.VISIBLE);
+        }
+        //Hide the radiobuttons for choosing path no matter what. It will be turned on only in special circumstance
+        radioGrp_PathChoice.clearCheck();
+        radioGrp_PathChoice.setVisibility(View.INVISIBLE);
+    }
+
+    // Highlights a move given the origin and destination
+    private void HighlightAMove(View origin, View destination) {
         // Unpress buttons if they were pressed earlier for easy identification purposes
         SetAButtonPress(origin, false);
         SetAButtonPress(destination, false);
