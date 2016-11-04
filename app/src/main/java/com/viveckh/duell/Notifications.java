@@ -8,7 +8,7 @@ import java.util.Vector;
 public final class Notifications {
     //variables declaration
     private static Vector<String> notificationsList;
-    private final int SUM_OF_OPPOSITE_SIDES = 7;
+    private final static int SUM_OF_OPPOSITE_SIDES = 7;
 
     // Private constructor
     private Notifications() {

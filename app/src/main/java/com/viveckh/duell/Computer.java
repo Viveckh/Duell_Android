@@ -253,7 +253,7 @@ public class Computer extends Player {
     }
 
     // Finds a co-ordinate to place blocking dice on the vertical route
-    public boolean FindBlockPointVertically(Dice hostileDice, Square squareToProtect, Board board) {
+    private boolean FindBlockPointVertically(Dice hostileDice, Square squareToProtect, Board board) {
         do {
             //Bump up/down the coordinate to check first
             if (hostileDice.GetRow() < squareToProtect.GetRow()) {
