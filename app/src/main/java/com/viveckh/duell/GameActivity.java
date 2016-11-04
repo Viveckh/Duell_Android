@@ -8,6 +8,9 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -28,6 +31,7 @@ public class GameActivity extends AppCompatActivity {
 
     // View components
     RadioGroup radioGrp_PathChoice;
+    TextView txtView_nextPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ public class GameActivity extends AppCompatActivity {
         computer = new Computer();
 
         radioGrp_PathChoice = (RadioGroup)findViewById(R.id.radioGrp_PathChoice);
+        txtView_nextPlayer = (TextView)findViewById(R.id.txtView_nextPlayer);
         SetRadioGroupListener();
 
         //Temporary additions until bundle data is passed from previous action
@@ -99,12 +104,18 @@ public class GameActivity extends AppCompatActivity {
 
         // Make the move and, if successful, transfer the controls to the computer
         if (human.Play(startRow, startCol, endRow, endCol, board, pathChoice)) {
+            //Go to next activity if game over
+            if (board.GameOverConditionMet()) {
+                // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
+            }
+
             DrawBoard(board);
             HighlightAMove(origin, destination);
 
             // Transfer control to computer and let it make a move
             humanTurn = false;
             computerTurn = true;
+            txtView_nextPlayer.setText("Bot's Turn");
             // Reset Button Availability based on the Computer's turn next
         }
         resetButtonAvailability();
@@ -137,10 +148,24 @@ public class GameActivity extends AppCompatActivity {
         computer.Play(board, false);
         DrawBoard(board);
 
+        //Go to next activity if game over
+        if (board.GameOverConditionMet()) {
+            // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
+
+        }
+
         // Transfer controls to human and disable the buttons for bot.play
         computerTurn = false;
         humanTurn = true;
+        txtView_nextPlayer.setText("Your Turn");
         resetButtonAvailability();
+    }
+
+    //Generates an optimal move for the user using computer's algorithm
+    public void TurnHelpModeOn(View view) {
+        if (humanTurn) {
+            computer.Play(board, true);
+        }
     }
 
     // Simulates a button press given the view
@@ -227,8 +252,6 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 
 }

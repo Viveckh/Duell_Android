@@ -78,6 +78,35 @@ public class Board {
         }
     }
 
+    // Checks if the condition to end the game has been met
+    public boolean GameOverConditionMet() {
+        //If one of the kings captured
+        if (humans[4].IsCaptured() || bots[4].IsCaptured()) {
+            return true;
+        }
+
+        //If the human key square is occupied by the bots King die
+        if (IsSquareOccupied(0, 4)) {
+            if (GetSquareResident(0, 4).IsBotOperated()) {
+                if (GetSquareResident(0, 4).IsKing()) {
+                    return true;
+                }
+            }
+        }
+
+        //If the computer key square is occupied by the human King die
+        if (IsSquareOccupied(7, 4)) {
+            if (!GetSquareResident(7, 4).IsBotOperated()) {
+                if (GetSquareResident(7, 4).IsKing()) {
+                    return true;
+                }
+            }
+        }
+
+        //If none of the game over conditions are met
+        return false;
+    }
+
     // SELECTORS
     // Checks if a square in the gameboard is occupied with dice
     public boolean IsSquareOccupied(int row, int col) {
