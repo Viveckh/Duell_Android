@@ -48,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Temporary additions until bundle data is passed from previous action
         humanTurn = true;
+        resetButtonAvailability();
     }
 
     // Processes the user input and passes over to finalize the move
@@ -102,6 +103,7 @@ public class GameActivity extends AppCompatActivity {
     private void FinalizeUserMove(int pathChoice) {
         // PathChoice 0 indicates no preference, 1 indicates vertical-first, and 2 indicates lateral-first
 
+        Notifications.ClearNotificationsList();
         // Make the move and, if successful, transfer the controls to the computer
         if (human.Play(startRow, startCol, endRow, endCol, board, pathChoice)) {
             //Go to next activity if game over
@@ -118,6 +120,8 @@ public class GameActivity extends AppCompatActivity {
             txtView_nextPlayer.setText("Bot's Turn");
             // Reset Button Availability based on the Computer's turn next
         }
+        //Do the following whether moves are successful or not
+        DisplayBotMessages();
         resetButtonAvailability();
         // Hide the path choice radiobuttons no matter whether the move is successful or not
     }
@@ -144,6 +148,8 @@ public class GameActivity extends AppCompatActivity {
         if (!computerTurn) {
             return;
         }
+        Notifications.ClearNotificationsList();
+
         // Process computer move and draw the board
         computer.Play(board, false);
         DrawBoard(board);
@@ -158,13 +164,17 @@ public class GameActivity extends AppCompatActivity {
         computerTurn = false;
         humanTurn = true;
         txtView_nextPlayer.setText("Your Turn");
+        DisplayBotMessages();
         resetButtonAvailability();
     }
 
     //Generates an optimal move for the user using computer's algorithm
     public void TurnHelpModeOn(View view) {
         if (humanTurn) {
+            Notifications.ClearNotificationsList();
+            Notifications.Msg_HelpModeOn();
             computer.Play(board, true);
+            DisplayBotMessages();
         }
     }
 
@@ -226,6 +236,22 @@ public class GameActivity extends AppCompatActivity {
         endPoint.startAnimation(animation);
     }
 
+    public void DisplayBotMessages() {
+        // If the msg vector is not empty, print out the msges that have been stored in it
+        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
+        String msgToDisplay;
+        if (!Notifications.GetNotificationsList().isEmpty()) {
+            msgToDisplay = Notifications.GetNotificationsList().toString()
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "");
+            txtView_BotMessages.setText(msgToDisplay);
+        }
+        else {
+            msgToDisplay = "No messages to display.";
+            txtView_BotMessages.setText(msgToDisplay);
+        }
+    }
 
     // Updates the board view based on the current state of the game
     public void DrawBoard(Board board) {

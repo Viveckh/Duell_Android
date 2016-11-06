@@ -9,7 +9,6 @@ public class Computer extends Player {
     // CONSTANTS, VARIABLES AND OBJECT DECLARATIONS
     final private int TEAMSIZE = 9;
     private boolean helpModeOn;
-    //Notifications notifications;
 
     private Dice[] ownDiceList = new Dice[9];
     private Dice[] opponentDiceList = new Dice[9];
@@ -56,7 +55,7 @@ public class Computer extends Player {
 
         int index;
 
-        //notifications.BotsThink_TryingToCaptureOpponentKeys();
+        Notifications.BotsThink_TryingToCaptureOpponentKeys();
         // STEP 1: Check if the opponent's king or key square can be captured. If yes, go for it!
         for (index = 0; index < TEAMSIZE; index++) {
             if (!ownDiceList[index].IsCaptured()) {
@@ -73,7 +72,7 @@ public class Computer extends Player {
             }
         }
 
-        //notifications.BotsThink_CheckingKingNKeySquareSafety();
+        Notifications.BotsThink_CheckingKingNKeySquareSafety();
         // STEP 2: Check if own king or keysquare is under potential attack. If yes, Save Em'
         for (index = 0; index < TEAMSIZE; index++) {
             if (!opponentDiceList[index].IsCaptured()) {
@@ -83,34 +82,34 @@ public class Computer extends Player {
                 if (IsValidDestination(opponentDiceList[index], ownKingSquare)) {
                     if (IsPathValid(opponentDiceList[index], ownKingSquare, calculationBoard)) {
                         // King is under imminent threat
-                        //notifications.BotsThink_KeyThreatDetected("King");
+                        Notifications.BotsThink_KeyThreatDetected("King");
 
                         // First, Try capturing the hostile opponent
                         if (TryCapturingTheHostileOpponent(opponentDiceList[index], board)) {
-                            //helpModeOn ? notifications.Msg_NoMsg() : notifications.BotsThink_HostileOpponentCaptured("King");
+                            printStatus = helpModeOn ? Notifications.Msg_NoMsg() : Notifications.BotsThink_HostileOpponentCaptured("King");
                             return true;
                         }
                         else {
-                            //notifications.BotsThink_HostileOpponentUncapturable("King");
+                            Notifications.BotsThink_HostileOpponentUncapturable("King");
                         }
 
                         // Second, Try blocking the hostile opponent
                         if (TryBlockingAttack(opponentDiceList[index], ownKingSquare, board)) {
-                            //helpModeOn ? notifications.Msg_NoMsg() : notifications.BotsThink_BlockingMoveMade();
+                            printStatus = helpModeOn ? Notifications.Msg_NoMsg() : Notifications.BotsThink_BlockingMoveMade();
                             return true;
                         }
                         else {
-                            //notifications.BotsThink_BlockingMoveNotPossible();
+                            Notifications.BotsThink_BlockingMoveNotPossible();
                         }
 
 
                         // Third, Try moving the king as a last resort and make sure the new position is safe
                         if (TryMovingKing(ownKingSquare, board)) {
-                            //helpModeOn ? notifications.Msg_NoMsg() : notifications.BotsThink_KingMoved();
+                            printStatus = helpModeOn ? Notifications.Msg_NoMsg() : Notifications.BotsThink_KingMoved();
                             return true;
                         }
                         else {
-                            //notifications.BotsThink_UnsafeToMoveKing();
+                            Notifications.BotsThink_UnsafeToMoveKing();
                         }
                     }
                 }
@@ -124,14 +123,14 @@ public class Computer extends Player {
 
         // STEP 3: Try to capture any vulnerable opponent dice in the game board
         // We will not send king to capture opponents to make sure king is safe from opponent's trap, king will only capture opponent king which is facilitated above
-        //notifications.BotsThink_TryingToCaptureOpponentDice();
+        Notifications.BotsThink_TryingToCaptureOpponentDice();
         for (index = 0; index < TEAMSIZE; index++) {
             // Use the die to hunt only if it is not a king and hasn't been captured yet
             if (!ownDiceList[index].IsKing() && !ownDiceList[index].IsCaptured()) {
                 for (int jindex = 0; jindex < TEAMSIZE; jindex++) {
                     if (!opponentDiceList[jindex].IsCaptured()) {
                         if (MakeAMove(ownDiceList[index].GetRow(), ownDiceList[index].GetColumn(), opponentDiceList[jindex].GetRow(), opponentDiceList[jindex].GetColumn(), board, helpModeOn, 0)) {
-                            //helpModeOn ? notifications.Msg_NoMsg() : notifications.BotsThink_CapturedOpponentDice();
+                            printStatus = helpModeOn ? Notifications.Msg_NoMsg() : Notifications.BotsThink_CapturedOpponentDice();
                             return true;
                         }
                     }
@@ -140,7 +139,7 @@ public class Computer extends Player {
         }
 
         // STEP 4: Protect any own dice that might be potentially captured by the opponent in the next step
-        //notifications.BotsThink_ProtectDicesFromPotentialCaptures();
+        Notifications.BotsThink_ProtectDicesFromPotentialCaptures();
         // for all uncaptured opponent dices
         for (index = 0; index < TEAMSIZE; index++) {
             if (!opponentDiceList[index].IsCaptured()) {
@@ -168,7 +167,7 @@ public class Computer extends Player {
         int minDistance = 99;
         int distanceFromFinalDestination = 99;
 
-        //notifications.BotsThink_SearchingOrdinaryMove();
+        Notifications.BotsThink_SearchingOrdinaryMove();
         //For each of the die, go through every square in the gameboard and find the most optimal square to move in current state
         for (index = 0; index < TEAMSIZE; index++) {
             if (!ownDiceList[index].IsKing() && !ownDiceList[index].IsCaptured()) {						// For every uncaptured soldier die

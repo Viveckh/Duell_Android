@@ -18,7 +18,7 @@ public class Human extends Player {
 
         if (IndexOutOfBounds(startRow, startCol, endRow, endCol)) {
             // Log error here
-            //notifications.Msg_InputOutOfBounds();
+            Notifications.Msg_InputOutOfBounds();
             return false;
         }
 
@@ -43,12 +43,12 @@ public class Human extends Player {
                 }
             }
             else {
-                //notifications.Msg_WrongDice();
+                Notifications.Msg_WrongDice();
                 return false;
             }
         }
         else {
-            //notifications.Msg_NoDiceToMove();
+            Notifications.Msg_NoDiceToMove();
             return false;
         }
     }

@@ -15,8 +15,9 @@ public class Player {
     // Counting variables for traversals to reset back the die position
     private int counterRowsTraversed;
     private int counterColumnsTraversed;
-
-    //Notifications notifications;
+    
+    // Temporary variable to receive result for tertiary operators
+    protected boolean printStatus;
     protected static boolean printNotifications = true;
 
     //Default constructor
@@ -48,7 +49,7 @@ public class Player {
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
-            //printNotifications ? notifications.Msg_CapturedAnOpponent() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
@@ -72,7 +73,7 @@ public class Player {
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
-            //printNotifications ? notifications.Msg_CapturedAnOpponent() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
@@ -96,7 +97,7 @@ public class Player {
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
-            //printNotifications ? notifications.Msg_CapturedAnOpponent() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
@@ -120,7 +121,7 @@ public class Player {
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
-            //printNotifications ? notifications.Msg_CapturedAnOpponent() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
@@ -140,11 +141,11 @@ public class Player {
                 return true;
             }
             else {
-                //printNotifications ? notifications.Msg_InvalidMove() : notifications.Msg_NoMsg();
+                printStatus = printNotifications ? Notifications.Msg_InvalidMove() : Notifications.Msg_NoMsg();
             }
         }
         else {
-            //printNotifications ? notifications.Msg_RunningOverOwnDice() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_RunningOverOwnDice() : Notifications.Msg_NoMsg();
         }
         return false;
     }
@@ -198,7 +199,7 @@ public class Player {
             }
 
             //If both the path couldn't return true, then the path is invalid
-            //printNotifications ? notifications.Msg_NoValidPath() : notifications.Msg_NoMsg();
+            printStatus = printNotifications ? Notifications.Msg_NoValidPath() : Notifications.Msg_NoMsg();
             return false;
         }
 
@@ -211,7 +212,7 @@ public class Player {
                 return true;
             }
             else {
-                //printNotifications ? notifications.Msg_NoValidPath() : notifications.Msg_NoMsg();
+                printStatus = printNotifications ? Notifications.Msg_NoValidPath() : Notifications.Msg_NoMsg();
                 return false;
             }
         }
@@ -225,7 +226,7 @@ public class Player {
                 return true;
             }
             else {
-               // printNotifications ? notifications.Msg_NoValidPath() : notifications.Msg_NoMsg();
+               printStatus = printNotifications ? Notifications.Msg_NoValidPath() : Notifications.Msg_NoMsg();
                 return false;
             }
         }
@@ -317,7 +318,7 @@ public class Player {
             if (IsPathValid(board.GetSquareResident(startRow, startCol), board.GetSquareAtLocation(endRow, endCol), board)) {
                 // If help mode is on, no need to make the actual move, return true here and print suggestion
                 if (helpModeOn) {
-                    //notifications.Msg_HelpModeRecommendedMove(startRow + 1, startCol + 1, endRow + 1, endCol + 1, pathChoice);
+                    Notifications.Msg_HelpModeRecommendedMove(startRow + 1, startCol + 1, endRow + 1, endCol + 1, pathChoice);
                     return true;
                 }
 
@@ -336,7 +337,7 @@ public class Player {
 
                     // Display a notification if the user's choice of path wasn't valid and had to be superceded by the next best route
                     if (path != pathChoice) {
-                        //printNotifications ? notifications.Msg_90DegreePathSelectionNotProcessed() : notifications.Msg_NoMsg();
+                        printStatus = printNotifications ? Notifications.Msg_90DegreePathSelectionNotProcessed() : Notifications.Msg_NoMsg();
                     }
                 }
 
@@ -346,30 +347,30 @@ public class Player {
                     case 1:
                         KeepRollingVertically(board.GetSquareResident(startRow, startCol), board.GetSquareAtLocation(endRow, endCol), board);
                         KeepRollingLaterally(board.GetSquareResident(startRow + counterRowsTraversed, startCol), board.GetSquareAtLocation(endRow, endCol), board);
-                        //notifications.Msg_NatureOfPathTaken("VERTICAL & LATERAL");
+                        Notifications.Msg_NatureOfPathTaken("VERTICAL & LATERAL");
                         break;
                     // First laterally, a 90 degree turn, then vertically
                     case 2:
                         KeepRollingLaterally(board.GetSquareResident(startRow, startCol), board.GetSquareAtLocation(endRow, endCol), board);
                         KeepRollingVertically(board.GetSquareResident(startRow, startCol + counterColumnsTraversed), board.GetSquareAtLocation(endRow, endCol), board);
-                        //notifications.Msg_NatureOfPathTaken("LATERAL & VERTICAL");
+                        Notifications.Msg_NatureOfPathTaken("LATERAL & VERTICAL");
                         break;
                     // Vertically only
                     case 3:
                         KeepRollingVertically(board.GetSquareResident(startRow, startCol), board.GetSquareAtLocation(endRow, endCol), board);
-                        //notifications.Msg_NatureOfPathTaken("VERTICAL");
+                        Notifications.Msg_NatureOfPathTaken("VERTICAL");
                         break;
                     // Laterally only
                     case 4:
                         KeepRollingLaterally(board.GetSquareResident(startRow, startCol), board.GetSquareAtLocation(endRow, endCol), board);
-                        //notifications.Msg_NatureOfPathTaken("LATERAL");
+                        Notifications.Msg_NatureOfPathTaken("LATERAL");
                         break;
                     default:
                         //ATTENTION: LOG ERROR SAYING THE PATH DESTINATION COULDN'T BE SET FOR SOME REASON
-                        //notifications.Msg_CrashedWhileMakingTheMove();
+                        Notifications.Msg_CrashedWhileMakingTheMove();
                         return false;
                 }
-                //notifications.Msg_MoveDescription(startRow + 1, startCol + 1, endRow + 1, endCol + 1, topValueAtStart, rightValueAtStart, board.GetSquareResident(endRow, endCol)->GetTop(), board.GetSquareResident(endRow, endCol)->GetRight(), board.GetSquareResident(endRow, endCol)->IsBotOperated());	// +1 To compensate for 1 offset in the array indexes
+                Notifications.Msg_MoveDescription(startRow + 1, startCol + 1, endRow + 1, endCol + 1, topValueAtStart, rightValueAtStart, board.GetSquareResident(endRow, endCol).GetTop(), board.GetSquareResident(endRow, endCol).GetRight(), board.GetSquareResident(endRow, endCol).IsBotOperated());	// +1 To compensate for 1 offset in the array indexes
                 return true;
             }
         }
