@@ -1,5 +1,6 @@
 package com.viveckh.duell;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,17 +39,33 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        board = new Board();
+
+        // Get intent and set board based on whether the game is fresh or restored
+        Intent intent = getIntent();
+        if (intent.getStringExtra("startMode").equals("new")) {
+            board = new Board();
+        }
+
+        txtView_nextPlayer = (TextView)findViewById(R.id.txtView_nextPlayer);
+        // Find out and set whose turn it is first
+        if (intent.getStringExtra("nextPlayer").equals("human")) {
+            humanTurn = true;
+            txtView_nextPlayer.setText("Your Turn");
+        }
+        else {
+            computerTurn = true;
+            txtView_nextPlayer.setText("Bot's Turn");
+        }
+
         DrawBoard(board);
         human = new Human();
         computer = new Computer();
 
+        // Initialize the radio buttons for user path choices
         radioGrp_PathChoice = (RadioGroup)findViewById(R.id.radioGrp_PathChoice);
-        txtView_nextPlayer = (TextView)findViewById(R.id.txtView_nextPlayer);
         SetRadioGroupListener();
 
-        //Temporary additions until bundle data is passed from previous action
-        humanTurn = true;
+        //reset the button availability based on the game initialization
         resetButtonAvailability();
     }
 
@@ -60,6 +77,12 @@ public class GameActivity extends AppCompatActivity {
             return;
         }
         resetButtonAvailability();
+
+        // Ensure the previously selected coordinates are cleared in 90 degree turn cases when user switches origin-destination without selecting a path
+        if (!hasUserInitiatedMove & (origin != null && destination != null)) {
+            SetAButtonPress(origin, false);
+            SetAButtonPress(destination, false);
+        }
 
         // Animate the pressed button
 
