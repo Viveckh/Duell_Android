@@ -1,5 +1,6 @@
 package com.viveckh.duell;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -55,8 +56,10 @@ public class GameActivity extends AppCompatActivity {
     public void ProcessUserMove(View view) {
         // Human player can't make moves if it is not his turn
         if (!humanTurn) {
+            DisplayControllerMessage("Not your turn!");
             return;
         }
+        resetButtonAvailability();
 
         // Animate the pressed button
 
@@ -71,6 +74,7 @@ public class GameActivity extends AppCompatActivity {
             startRow = TROWS - btnRow - 1;  //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
             startCol = btnColumn;
             hasUserInitiatedMove = true;
+            DisplayControllerMessage("Starting coordinate selected!");
             //Call function to highlight that button
 
             // Set the button viewable in pressed state, so it is easy to identify. Undo when the destination is picked
@@ -85,11 +89,13 @@ public class GameActivity extends AppCompatActivity {
             endRow = TROWS - btnRow - 1;    //Since the view is inverted, topmost row in model is bottommost in view and vice versa.
             endCol = btnColumn;
             hasUserInitiatedMove = false;
+            SetAButtonPress(destination, true);
 
             // If path choice necessary, then wait for user action by activating radiobuttons; else continue towards finalizing move
             if ((startRow != endRow) && (startCol != endCol)) {
                 //Display the radiobuttons for path choice and wait user action
                 radioGrp_PathChoice.setVisibility(View.VISIBLE);
+                DisplayControllerMessage("Select path using the radio buttons to the right!");
                 return;
             }
             else {
@@ -123,6 +129,8 @@ public class GameActivity extends AppCompatActivity {
         //Do the following whether moves are successful or not
         DisplayBotMessages();
         resetButtonAvailability();
+        SetAButtonPress(origin, false);
+        SetAButtonPress(destination, false);
         // Hide the path choice radiobuttons no matter whether the move is successful or not
     }
 
@@ -157,7 +165,6 @@ public class GameActivity extends AppCompatActivity {
         //Go to next activity if game over
         if (board.GameOverConditionMet()) {
             // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
-
         }
 
         // Transfer controls to human and disable the buttons for bot.play
@@ -180,10 +187,13 @@ public class GameActivity extends AppCompatActivity {
 
     // Simulates a button press given the view
     private void SetAButtonPress(View view, boolean state) {
-        /*
-        Button button = (Button)findViewById(view.getId());
-        view.setPressed(true);
-        */
+        Button button = (Button) findViewById(view.getId());
+        if (state) {
+            button.setBackgroundColor(Color.BLUE);
+        }
+        else {
+            button.setBackgroundResource(R.drawable.button_gameboard);
+        }
     }
 
     //Resets the various button availability in the view depending on whose turn it is
@@ -253,6 +263,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void DisplayControllerMessage(String msg) {
+        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
+        txtView_BotMessages.setText(msg);
+    }
+
     // Updates the board view based on the current state of the game
     public void DrawBoard(Board board) {
         for (int row = 0; row < 8; row++) {
@@ -278,6 +293,4 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
