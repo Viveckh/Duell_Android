@@ -316,4 +316,11 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
+
+    // Serialize game
+    public void SerializeGame(View view) {
+        Serializer serializer = new Serializer();
+        serializer.WriteToFile("GameSave", board, 3, 4, "human");
+        this.finishAffinity();
+    }
 }

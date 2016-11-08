@@ -28,7 +28,6 @@ public class HomeActivity extends AppCompatActivity {
 
     public void StartNewGame(View view) {
         //Show only components necessary to view toss results and to proceed to a new game
-        ((Button)findViewById(R.id.btn_StartNewGame)).setVisibility(View.INVISIBLE);
         ((Button)findViewById(R.id.btn_RestoreFromFile)).setVisibility(View.INVISIBLE);
         ((Button)findViewById(R.id.btn_ProceedToGame)).setVisibility(View.VISIBLE);
 

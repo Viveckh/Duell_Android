@@ -1058,7 +1058,8 @@
             android:text="Serialize()"
             android:id="@+id/btn_Serialize"
             android:layout_row="11"
-            android:layout_column="10" />
+            android:layout_column="10"
+            android:onClick="SerializeGame"/>
 
     </GridLayout>
 
