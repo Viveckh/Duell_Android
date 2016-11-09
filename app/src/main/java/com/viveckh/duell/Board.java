@@ -1,9 +1,11 @@
 package com.viveckh.duell;
 
+import java.io.Serializable;
+
 /**
  * Created by ZCV0LHB on 10/30/2016.
  */
-public class Board {
+public class Board implements Serializable{
     // The gameboard Array
     private Square[][] gameBoard = new Square[8][9];
 

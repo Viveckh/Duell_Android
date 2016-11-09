@@ -1,7 +1,9 @@
 package com.viveckh.duell;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -44,6 +46,9 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getStringExtra("startMode").equals("new")) {
             board = new Board();
+        }
+        if (intent.getStringExtra("startMode").equals("restore")) {
+            board = new Board((Board)intent.getSerializableExtra("gameBoard"));
         }
 
         txtView_nextPlayer = (TextView)findViewById(R.id.txtView_nextPlayer);
@@ -319,8 +324,32 @@ public class GameActivity extends AppCompatActivity {
 
     // Serialize game
     public void SerializeGame(View view) {
-        Serializer serializer = new Serializer();
-        serializer.WriteToFile("GameSave", board, 3, 4, "human");
-        this.finishAffinity();
+        // Display an alert dialog box to confirm the user wants to save and exit the game
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
+        alert_confirm.setMessage("Are you sure you want to save and quit?");
+        alert_confirm.setCancelable(true);
+
+        alert_confirm.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Serializer serializer = new Serializer();
+                        serializer.WriteToFile("GameSave.txt", board, 3, 4, "human");
+                        dialog.cancel();
+                        GameActivity.this.finishAffinity();
+                    }
+                });
+
+        alert_confirm.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        return;
+                    }
+                });
+
+        AlertDialog alertDialog = alert_confirm.create();
+        alertDialog.show();
     }
 }

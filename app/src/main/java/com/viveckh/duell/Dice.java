@@ -1,9 +1,11 @@
 package com.viveckh.duell;
 
+import java.io.Serializable;
+
 /**
  * Created by ZCV0LHB on 10/30/2016.
  */
-public class Dice {
+public class Dice implements Serializable{
     //CONSTANTS & VARIABLES DECLARATIONS
     final int SUM_OF_OPPOSITE_SIDES = 7;
 

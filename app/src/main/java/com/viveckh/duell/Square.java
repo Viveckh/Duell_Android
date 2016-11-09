@@ -2,11 +2,13 @@ package com.viveckh.duell;
 
 import com.viveckh.duell.Dice;
 
+import java.io.Serializable;
+
 /**
  * Created by ZCV0LHB on 10/30/2016.
  */
 
-public class Square {
+public class Square implements Serializable{
     // VARIABLE DECLARATIONS
 
     // Coordinates of the square within the game board

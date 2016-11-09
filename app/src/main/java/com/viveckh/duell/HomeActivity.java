@@ -26,6 +26,21 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void RestoreGame(View view) {
+        Board board = new Board();
+        Serializer serializer = new Serializer();
+        if (serializer.ReadAFile("GameSave.txt", board, 3, 4, "human")) {
+            Intent intent = new Intent(this, GameActivity.class);
+            intent.putExtra("startMode", "restore");    // Whether game is new or restored
+            intent.putExtra("nextPlayer", "human");
+            intent.putExtra("gameBoard", board);
+            startActivity(intent);
+        }
+        else {
+            ((TextView)findViewById(R.id.txtView_TossResults)).setText("File couldn't be read. Try again!");
+        }
+    }
+
     public void StartNewGame(View view) {
         //Show only components necessary to view toss results and to proceed to a new game
         ((Button)findViewById(R.id.btn_RestoreFromFile)).setVisibility(View.INVISIBLE);

@@ -29,7 +29,8 @@
         android:textSize="30dp"
         android:layout_below="@+id/txtView_GameName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="71dp" />
+        android:layout_marginTop="71dp"
+        android:onClick="RestoreGame"/>
 
     <Button
         android:layout_width="wrap_content"
