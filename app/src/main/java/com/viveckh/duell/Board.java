@@ -82,8 +82,11 @@ public class Board implements Serializable{
 
     // Checks if the condition to end the game has been met
     public boolean GameOverConditionMet() {
+        //ViewNonCapturedDice();
+
         //If one of the kings captured
         if (humans[4].IsCaptured() || bots[4].IsCaptured()) {
+            System.out.println("in here");
             return true;
         }
 
@@ -107,6 +110,25 @@ public class Board implements Serializable{
 
         //If none of the game over conditions are met
         return false;
+    }
+
+    // Prints out the indexes of player dice that are still active on the gameboard
+    private void ViewNonCapturedDice() {
+        System.out.print("Non Captured Human indexes: ");
+        for (int i = 0; i < 9; i++) {
+            if (!humans[i].IsCaptured()) {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+
+        System.out.print("Non Captured Bot indexes: ");
+        for (int j = 0; j < 9; j++) {
+            if (!bots[j].IsCaptured()) {
+                System.out.print(j + " ");
+            }
+        }
+        System.out.println();
     }
 
     // SELECTORS

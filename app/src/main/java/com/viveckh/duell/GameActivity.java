@@ -51,9 +51,10 @@ public class GameActivity extends AppCompatActivity {
             board = new Board((Board)intent.getSerializableExtra("gameBoard"));
         }
 
+        // Display the tournament scores and the next player based on the contents from Tournament static class
         txtView_nextPlayer = (TextView)findViewById(R.id.txtView_nextPlayer);
         // Find out and set whose turn it is first
-        if (intent.getStringExtra("nextPlayer").equals("human")) {
+        if (Tournament.GetNextPlayer().equals("human")) {
             humanTurn = true;
             txtView_nextPlayer.setText("Your Turn");
         }
@@ -62,9 +63,14 @@ public class GameActivity extends AppCompatActivity {
             txtView_nextPlayer.setText("Bot's Turn");
         }
 
+        //Setting the scores
+        ((TextView)findViewById(R.id.txtView_Scores)).setText("Scores" + "\nComp.:\t\t" + Tournament.GetComputerScore() +"\nHuman:\t" + Tournament.GetHumanScore());
+
         DrawBoard(board);
         human = new Human();
         computer = new Computer();
+
+
 
         // Initialize the radio buttons for user path choices
         radioGrp_PathChoice = (RadioGroup)findViewById(R.id.radioGrp_PathChoice);
@@ -143,6 +149,10 @@ public class GameActivity extends AppCompatActivity {
             //Go to next activity if game over
             if (board.GameOverConditionMet()) {
                 // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
+                Tournament.IncrementHumanScoreBy(1);
+                Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+                intent.putExtra("winner", "human");    // Whether game is new or restored
+                startActivity(intent);
             }
 
             DrawBoard(board);
@@ -192,7 +202,11 @@ public class GameActivity extends AppCompatActivity {
 
         //Go to next activity if game over
         if (board.GameOverConditionMet()) {
-            // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
+            // ATTENTION: Computer won, go to next activity and display results, and ask if user wants to replay
+            Tournament.IncrementComputerScoreBy(1);
+            Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+            intent.putExtra("winner", "computer");    // Whether game is new or restored
+            startActivity(intent);
         }
 
         // Transfer controls to human and disable the buttons for bot.play
@@ -334,7 +348,7 @@ public class GameActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Serializer serializer = new Serializer();
-                        serializer.WriteToFile("GameSave.txt", board, 3, 4, "human");
+                        serializer.WriteToFile("GameSave.txt", board);
                         dialog.cancel();
                         GameActivity.this.finishAffinity();
                     }

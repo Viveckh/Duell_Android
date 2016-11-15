@@ -18,7 +18,6 @@ import java.util.Random;
 
 public class HomeActivity extends AppCompatActivity {
 
-    String nextPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,17 +60,16 @@ public class HomeActivity extends AppCompatActivity {
     public void ProceedToGame(View view) {
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("startMode", "new");    // Whether game is new or restored
-        intent.putExtra("nextPlayer", nextPlayer);
         startActivity(intent);
     }
 
     public void RestoreGame(String fileName) {
         Board board = new Board();
         Serializer serializer = new Serializer();
-        if (serializer.ReadAFile(fileName, board, 3, 4, "human")) {
+        Tournament.ResetScores();
+        if (serializer.ReadAFile(fileName, board)) {
             Intent intent = new Intent(this, GameActivity.class);
             intent.putExtra("startMode", "restore");    // Whether game is new or restored
-            intent.putExtra("nextPlayer", "human");
             intent.putExtra("gameBoard", board);
             startActivity(intent);
         }
@@ -83,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     public void StartNewGame(View view) {
         //Show only components necessary to view toss results and to proceed to a new game
         ((Button)findViewById(R.id.btn_ProceedToGame)).setVisibility(View.VISIBLE);
-
+        Tournament.ResetScores();
         TossToBegin();
     }
 
@@ -100,11 +98,11 @@ public class HomeActivity extends AppCompatActivity {
 
         // Whoever has the highest number on top - wins the toss
         if (humanDieToss > botDieToss) {
-            nextPlayer = "human";
+            Tournament.SetNextPlayer("human");
             txtView_TossResults.setText("Toss Results:\nComputer: " + botDieToss + "\nHuman: " + humanDieToss + "\nYou won the toss.");
         }
         else {
-            nextPlayer = "computer";
+            Tournament.SetNextPlayer("computer");
             txtView_TossResults.setText("Toss Results:\nComputer: " + botDieToss + "\nHuman: " + humanDieToss + "\nComputer won the toss.");
         }
     }

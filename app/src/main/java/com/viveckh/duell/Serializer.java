@@ -1,14 +1,11 @@
 package com.viveckh.duell;
 
-import android.content.Context;
 import android.os.Environment;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 
 /**
  * Created by ZCV0LHB on 11/7/2016.
@@ -32,7 +29,7 @@ public class Serializer {
     }
 
     // Writing serialized game state along with tournament history results to file
-    public boolean WriteToFile(String fileName, Board board, int botWins, int humanWins, String nextPlayer) {
+    public boolean WriteToFile(String fileName, Board board) {
         // Setup the proper location to write the game state to
         this.fileName = fileName;
         File writeToDir =  new File (sdCard.getAbsolutePath() + "/Duell Data");
@@ -56,9 +53,9 @@ public class Serializer {
 
             // Writing the number of wins and next Player
             outputStream.write("\n".getBytes());
-            outputStream.write(("Computer Wins: " + botWins + "\n").getBytes());
-            outputStream.write(("Human Wins: " + humanWins + "\n").getBytes());
-            outputStream.write(("Next Player: " + nextPlayer + "\n").getBytes());
+            outputStream.write(("Computer Wins: " + Tournament.GetComputerScore() + "\n").getBytes());
+            outputStream.write(("Human Wins: " + Tournament.GetHumanScore() + "\n").getBytes());
+            outputStream.write(("Next Player: " + Tournament.GetNextPlayer() + "\n").getBytes());
             outputStream.close();
             return true;
         } catch(Exception e) {
@@ -67,7 +64,7 @@ public class Serializer {
     }
 
     // Reads a serialization file and stores in a multidimensional string array for restoring purposes
-    boolean ReadAFile(String fileName, Board board, int botWins, int humanWins, String nextPlayer) {
+    boolean ReadAFile(String fileName, Board board) {
         System.out.println(fileName);
         File file = new File(sdCard + "/Duell Data", fileName);
         try {
@@ -101,14 +98,16 @@ public class Serializer {
                     // Parse number of computer wins
                     if (line.matches("(\\s*)[Cc]omputer(\\s+)[Ww]ins(.*)")) {
                         System.out.println(line);
-                        botWins = Integer.parseInt(line.replaceAll("[\\D]", ""));
+                        int botWins = Integer.parseInt(line.replaceAll("[\\D]", ""));
+                        Tournament.IncrementComputerScoreBy(botWins);   //assuming if we are reading a file, the score is initially set to zero
                         System.out.println(botWins);
                     }
 
                     // Parse number of human wins
                     if (line.matches("(\\s*)[Hh]uman(\\s+)[Ww]ins(.*)")) {
                         System.out.println(line);
-                        humanWins = Integer.parseInt(line.replaceAll("[\\D]", ""));
+                        int humanWins = Integer.parseInt(line.replaceAll("[\\D]", ""));
+                        Tournament.IncrementHumanScoreBy(humanWins); //assuming if we are reading a file, the score is initially set to zero
                         System.out.println(humanWins);
                     }
 
@@ -116,12 +115,12 @@ public class Serializer {
                     if (line.matches("(\\s*)[Nn]ext(\\s+)[Pp]layer(.*)")) {
                         System.out.println(line);
                         if (line.matches("(.*):(.*)[Cc]omputer(.*)")) {
-                            nextPlayer = "computer";
+                            Tournament.SetNextPlayer("computer");
                         }
                         else {
-                            nextPlayer = "human";
+                            Tournament.SetNextPlayer("human");
                         }
-                        System.out.println(nextPlayer);
+                        System.out.println(Tournament.GetNextPlayer());
                     }
                 }
             }
