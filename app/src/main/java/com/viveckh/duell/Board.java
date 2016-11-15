@@ -82,7 +82,7 @@ public class Board implements Serializable{
 
     // Checks if the condition to end the game has been met
     public boolean GameOverConditionMet() {
-        //ViewNonCapturedDice();
+        ViewNonCapturedDice();
 
         //If one of the kings captured
         if (humans[4].IsCaptured() || bots[4].IsCaptured()) {
@@ -166,5 +166,9 @@ public class Board implements Serializable{
     // Sets a square vacant from any dice occupancies
     public void SetSquareVacant(int row, int col) {
         gameBoard[row][col].SetVacant();
+    }
+
+    public void SetSquareResidentCaptured(int row, int col, boolean value) {
+        gameBoard[row][col].SetResidentCaptured(value);
     }
 }

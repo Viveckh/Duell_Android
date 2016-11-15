@@ -83,4 +83,8 @@ public class Square implements Serializable{
     public void SetVacant() {
         resident = null;
     }
+
+    public void SetResidentCaptured(boolean value) {
+        resident.SetCaptured(value);
+    }
 }

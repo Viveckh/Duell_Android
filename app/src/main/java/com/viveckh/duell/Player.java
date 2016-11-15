@@ -48,7 +48,9 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
+            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -72,7 +74,9 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
+            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -96,7 +100,9 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
+            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -120,7 +126,9 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
+            board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
+            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
