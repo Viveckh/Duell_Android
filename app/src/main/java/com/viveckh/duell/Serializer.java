@@ -68,6 +68,7 @@ public class Serializer {
 
     // Reads a serialization file and stores in a multidimensional string array for restoring purposes
     boolean ReadAFile(String fileName, Board board, int botWins, int humanWins, String nextPlayer) {
+        System.out.println(fileName);
         File file = new File(sdCard + "/Duell Data", fileName);
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -81,6 +82,7 @@ public class Serializer {
             int row = 7;
             while (((line = reader.readLine()) != null) && (row >= 0)) {
                 System.out.println(line);
+                line = line.trim();       // To get rid of all the leading and trailing spaces in the read string
                 String temp[] = line.split("\\s+");
                 for (int col = 0; col < 9; col++) {
                     if (col < temp.length) {
