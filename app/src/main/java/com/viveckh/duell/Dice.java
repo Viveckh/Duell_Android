@@ -54,6 +54,7 @@ public class Dice implements Serializable{
     }
 
     public Dice(Dice anotherOne) {
+        //System.out.println("anotherone.row : " + anotherOne.row + "" + anotherOne.column + " " + anotherOne.top + "" + anotherOne.left + anotherOne.botOperated + anotherOne.king);
         this.row = anotherOne.row;
         this.column = anotherOne.column;
         this.top = anotherOne.top;

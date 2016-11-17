@@ -322,11 +322,14 @@ public class GameActivity extends AppCompatActivity {
                 if (board.IsSquareOccupied(model_row, col)) {
                     if (board.GetSquareResident(model_row, col).IsBotOperated()) {
                         button_Text = "C" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetLeft();
+                        System.out.print(model_row + "" + col + "\t");
                     }
                     else {
                         button_Text = "H" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetRight();
+                        System.out.print(model_row + "" + col + "\t");
                     }
                 }
+                System.out.println();
 
                 String button_ID = "button" + row + col;
                 int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());

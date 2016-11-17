@@ -138,6 +138,7 @@ public class Player {
     // Checks if the destination is a valid one; create duplicate copies of function parameters
     protected boolean IsValidDestination(Dice origin, Square dest) {
         // Making duplicate copies of function parameters to avoid modifying original reference
+        System.out.println("Printing from IsValidDestination" + origin.GetRow() + "" + origin.GetColumn() + "->" + dest.GetRow() + "" + dest.GetColumn());
         Dice dice = new Dice(origin);
         Square destination = new Square(dest);
 
