@@ -76,13 +76,34 @@ public class Board implements Serializable{
         for (int currentRow = 0; currentRow < 8; currentRow++) {
             for(int currentCol = 0; currentCol < 9; currentCol++) {
                 gameBoard[currentRow][currentCol] = new Square(anotherOne.gameBoard[currentRow][currentCol]);
+
+                //NEW ADDITION: TO FIX THE BUG THAT TOOK 7HRS TO DISCOVER
+                // Making the resident variable of the given square point to its corresponding dice in the DiceArrays (to maintain the connection)
+                if (gameBoard[currentRow][currentCol].GetResident() != null) {
+                    for (int indyex = 0; indyex < 9; indyex++) {
+                        //If any dice in DiceArrays has the same coordinate as the resident dice in a given square, then we make the square point to this array dice
+                        if (!humans[indyex].IsCaptured()) {
+                            if ((humans[indyex].GetRow() == gameBoard[currentRow][currentCol].GetResident().GetRow()) && (humans[indyex].GetColumn() == gameBoard[currentRow][currentCol].GetResident().GetColumn())) {
+                                gameBoard[currentRow][currentCol].SetOccupied(humans[indyex]);
+                                break;
+                            }
+                        }
+
+                        if (!bots[indyex].IsCaptured()) {
+                            if ((bots[indyex].GetRow() == gameBoard[currentRow][currentCol].GetResident().GetRow()) && (bots[indyex].GetColumn() == gameBoard[currentRow][currentCol].GetResident().GetColumn())) {
+                                gameBoard[currentRow][currentCol].SetOccupied(bots[indyex]);
+                                break;
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
 
     // Checks if the condition to end the game has been met
     public boolean GameOverConditionMet() {
-        ViewNonCapturedDice();
 
         //If one of the kings captured
         if (humans[4].IsCaptured() || bots[4].IsCaptured()) {
@@ -113,19 +134,20 @@ public class Board implements Serializable{
     }
 
     // Prints out the indexes of player dice that are still active on the gameboard
-    private void ViewNonCapturedDice() {
+    public void ViewNonCapturedDice() {
         System.out.print("Non Captured Human indexes: ");
         for (int i = 0; i < 9; i++) {
             if (!humans[i].IsCaptured()) {
-                System.out.print(i + " ");
+                System.out.println(i + ": " + humans[i].GetRow() + " " + humans[i].GetColumn());
+                if (gameBoard[humans[i].GetRow()][humans[i].GetColumn()].MatchingResident(humans[i])) { System.out.println("Resident Match"); }
             }
         }
-        System.out.println();
 
         System.out.print("Non Captured Bot indexes: ");
         for (int j = 0; j < 9; j++) {
             if (!bots[j].IsCaptured()) {
-                System.out.print(j + " ");
+                System.out.println(j + ": " + bots[j].GetRow() + " " + bots[j].GetColumn());
+                if (gameBoard[bots[j].GetRow()][bots[j].GetColumn()].MatchingResident(bots[j])) { System.out.println("Resident Match"); }
             }
         }
         System.out.println();

@@ -50,7 +50,6 @@ public class Player {
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
-            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -76,7 +75,6 @@ public class Player {
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
-            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -102,7 +100,6 @@ public class Player {
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
-            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -128,7 +125,6 @@ public class Player {
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
             //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
-            System.out.println(board.GetSquareResident(dice.GetRow(), dice.GetColumn()).IsCaptured());
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
 
@@ -138,7 +134,6 @@ public class Player {
     // Checks if the destination is a valid one; create duplicate copies of function parameters
     protected boolean IsValidDestination(Dice origin, Square dest) {
         // Making duplicate copies of function parameters to avoid modifying original reference
-        System.out.println("Printing from IsValidDestination" + origin.GetRow() + "" + origin.GetColumn() + "->" + dest.GetRow() + "" + dest.GetColumn());
         Dice dice = new Dice(origin);
         Square destination = new Square(dest);
 

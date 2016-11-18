@@ -55,7 +55,7 @@ public class ResultsActivity extends AppCompatActivity {
         }
 
         //Setting the scores
-        txtView_TournamentScores.setText("Scores" + "\nComp.:\t\t" + Tournament.GetComputerScore() +"\nHuman:\t" + Tournament.GetHumanScore());
+        txtView_TournamentScores.setText("Scores" + "\nComp.:\t" + Tournament.GetComputerScore() +"\nHuman:\t" + Tournament.GetHumanScore());
 
         //Set on click listener if the user wants to play another round
         btn_PlayAnotherRound.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +73,7 @@ public class ResultsActivity extends AppCompatActivity {
                     txtView_ExtraNotifications.setText("Congratulations! You won the Tournament. Our programmer must've done a terrible job on algorithms for someone like you to win.");
                 }
                 else if (Tournament.GetHumanScore() < Tournament.GetComputerScore()) {
-                    txtView_ExtraNotifications.setText("The Computer Won the Tournament. *reinforcing the notion once again that we bots are better than you humans*");
+                    txtView_ExtraNotifications.setText("The Computer Won the Tournament. *reinforcing the notion that we bots are better than you humans once again*");
                 }
                 else {
                     txtView_ExtraNotifications.setText("It was a draw. Guess we'll see who's better in the next tournament.");

@@ -26,10 +26,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Tournament Scores"
         android:id="@+id/txtView_TournamentScores"
-        android:layout_marginLeft="72dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="55dp"
-        android:layout_below="@+id/btn_PlayAnotherRound"
+        android:layout_marginLeft="74dp"
+        android:layout_marginStart="74dp"
+        android:layout_alignTop="@+id/btn_Proceed"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -77,8 +76,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="No additional notifications at the moment..."
         android:id="@+id/txtView_ExtraNotifications"
-        android:layout_alignTop="@+id/txtView_TournamentScores"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/btn_EndTournament"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp" />
 
     <Button
         android:layout_width="wrap_content"

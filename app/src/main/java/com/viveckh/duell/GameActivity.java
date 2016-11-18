@@ -3,6 +3,7 @@ package com.viveckh.duell;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -34,8 +36,8 @@ public class GameActivity extends AppCompatActivity {
     private View origin, destination;   // Start and end squares in the display board, from view perspective
 
     // View components
-    RadioGroup radioGrp_PathChoice;
-    TextView txtView_nextPlayer;
+    private RadioGroup radioGrp_PathChoice;
+    private TextView txtView_nextPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,9 +152,7 @@ public class GameActivity extends AppCompatActivity {
             if (board.GameOverConditionMet()) {
                 // ATTENTION: Human won, go to next activity and display results, and ask if user wants to replay
                 Tournament.IncrementHumanScoreBy(1);
-                Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
-                intent.putExtra("winner", "human");    // Whether game is new or restored
-                startActivity(intent);
+                AutoRedirectToResults("human");
             }
 
             DrawBoard(board);
@@ -161,6 +161,7 @@ public class GameActivity extends AppCompatActivity {
             // Transfer control to computer and let it make a move
             humanTurn = false;
             computerTurn = true;
+            Tournament.SetNextPlayer("computer");
             txtView_nextPlayer.setText("Bot's Turn");
             // Reset Button Availability based on the Computer's turn next
         }
@@ -204,14 +205,13 @@ public class GameActivity extends AppCompatActivity {
         if (board.GameOverConditionMet()) {
             // ATTENTION: Computer won, go to next activity and display results, and ask if user wants to replay
             Tournament.IncrementComputerScoreBy(1);
-            Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
-            intent.putExtra("winner", "computer");    // Whether game is new or restored
-            startActivity(intent);
+            AutoRedirectToResults("computer");
         }
 
         // Transfer controls to human and disable the buttons for bot.play
         computerTurn = false;
         humanTurn = true;
+        Tournament.SetNextPlayer("human");
         txtView_nextPlayer.setText("Your Turn");
         DisplayBotMessages();
         resetButtonAvailability();
@@ -310,6 +310,40 @@ public class GameActivity extends AppCompatActivity {
         txtView_BotMessages.setText(msg);
     }
 
+    //Calls a timer to wait before automatically redirecting to the results activity
+    private void AutoRedirectToResults(String winner) {
+        //Disable the entire view first to prevent user manipulation
+        GridLayout layout = (GridLayout) findViewById(R.id.boardGrid);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            //Change everything to background color red if not the msgbox
+            if (child.getId() != R.id.txtView_BotMessages) {
+                child.setEnabled(false);
+            }
+            else {
+                child.setBackgroundColor(Color.RED);
+            }
+        }
+
+        final String winningTeam = winner;
+        //Now start the timer to wait
+        final TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
+        CountDownTimer timer = new CountDownTimer(10000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                txtView_BotMessages.setText("GAME OVER.\n" + winningTeam + " won.\nRedirecting to results page in " + millisUntilFinished / 1000 + " seconds");
+            }
+
+            public void onFinish() {
+                txtView_BotMessages.setText("Redirecting Now!");
+                Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+                intent.putExtra("winner", winningTeam);    // Whether game is new or restored
+                startActivity(intent);
+            }
+        };
+        timer.start();
+    }
+
     // Updates the board view based on the current state of the game
     public void DrawBoard(Board board) {
         for (int row = 0; row < 8; row++) {
@@ -322,14 +356,18 @@ public class GameActivity extends AppCompatActivity {
                 if (board.IsSquareOccupied(model_row, col)) {
                     if (board.GetSquareResident(model_row, col).IsBotOperated()) {
                         button_Text = "C" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetLeft();
-                        System.out.print(model_row + "" + col + "\t");
                     }
                     else {
                         button_Text = "H" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetRight();
                         System.out.print(model_row + "" + col + "\t");
                     }
                 }
-                System.out.println();
+                System.out.println(row + "" + col + board.IsSquareOccupied(model_row, col));
+                if (board.IsSquareOccupied(model_row, col)) {
+                    System.out.println(board.GetSquareResident(model_row, col).GetRow() + "" + board.GetSquareResident(model_row, col).GetColumn() + " " + board.GetSquareResident(model_row, col).GetFront() + board.GetSquareResident(model_row, col).IsKing() + board.GetSquareResident(model_row, col).IsBotOperated() + "Captured: " + board.GetSquareResident(model_row, col).IsCaptured() + "\t");
+                }
+
+
 
                 String button_ID = "button" + row + col;
                 int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
@@ -337,6 +375,7 @@ public class GameActivity extends AppCompatActivity {
                 button.setText(button_Text);
             }
         }
+        board.ViewNonCapturedDice();
     }
 
     // Serialize game

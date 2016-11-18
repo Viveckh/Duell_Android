@@ -87,4 +87,11 @@ public class Square implements Serializable{
     public void SetResidentCaptured(boolean value) {
         resident.SetCaptured(value);
     }
+
+    public boolean MatchingResident(Dice dice) {
+        if (resident == dice) {
+            return true;
+        }
+        return false;
+    }
 }
