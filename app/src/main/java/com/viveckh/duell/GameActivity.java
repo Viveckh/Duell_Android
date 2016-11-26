@@ -197,9 +197,13 @@ public class GameActivity extends AppCompatActivity {
         }
         Notifications.ClearNotificationsList();
 
+        //Save the board before move for using it later to find out which coordinates to highlight based on changes
+        Board boardBeforeMove = new Board(board);
+
         // Process computer move and draw the board
         computer.Play(board, false);
         DrawBoard(board);
+        ShowComputerMove(boardBeforeMove, board);
 
         //Go to next activity if game over
         if (board.GameOverConditionMet()) {
@@ -254,6 +258,66 @@ public class GameActivity extends AppCompatActivity {
         //Hide the radiobuttons for choosing path no matter what. It will be turned on only in special circumstance
         radioGrp_PathChoice.clearCheck();
         radioGrp_PathChoice.setVisibility(View.INVISIBLE);
+    }
+
+    // Finds out how the computer changed the board after its move and highligts the move it made
+    private void ShowComputerMove(Board initialBoard, Board finalBoard) {
+        int changesFound = 0;
+
+        //Find out the changes that have occured to the board after the move
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 9; col++) {
+                // Subtracting from a constant to print an inverted model in the view
+                int model_row = TROWS - row - 1;
+
+                //Get the corresponding residents in the two boards first
+                String resident_Initial = "";
+                String resident_Final = "";
+
+                // Finding the resident in the given coordinate for the initial board state
+                if (initialBoard.IsSquareOccupied(model_row, col)) {
+                    if (initialBoard.GetSquareResident(model_row, col).IsBotOperated()) {
+                        resident_Initial = "C" + initialBoard.GetSquareResident(model_row, col).GetTop() + initialBoard.GetSquareResident(model_row, col).GetLeft();
+                    }
+                    else {
+                        resident_Initial = "H" + initialBoard.GetSquareResident(model_row, col).GetTop() + initialBoard.GetSquareResident(model_row, col).GetRight();
+                    }
+                }
+
+                // Finding the resident in the given coordinate for the final board state
+                if (finalBoard.IsSquareOccupied(model_row, col)) {
+                    if (finalBoard.GetSquareResident(model_row, col).IsBotOperated()) {
+                        resident_Final = "C" + finalBoard.GetSquareResident(model_row, col).GetTop() + finalBoard.GetSquareResident(model_row, col).GetLeft();
+                    }
+                    else {
+                        resident_Final = "H" + finalBoard.GetSquareResident(model_row, col).GetTop() + finalBoard.GetSquareResident(model_row, col).GetRight();
+                    }
+                }
+
+                //Find where changes have taken place and set them to either origin or destination
+                //System.out.println("INITIAL RESIDENT: " + resident_Initial);
+                //System.out.println("FINAL RESIDENT: " + resident_Final);
+
+                //Set the class variables of origin and destination
+                if (!resident_Initial.equals(resident_Final)) {
+                    String button_ID = "button" + row + col;
+                    int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
+                    if (changesFound == 0) {
+                        origin = findViewById(button_ResID);
+                    }
+                    if (changesFound == 1) {
+                        destination = findViewById(button_ResID);
+                    }
+                    changesFound++;
+                }
+            }
+        }
+
+        System.out.println("CHANGES FOUND: " + changesFound);
+        //If at least two changes are found, then continue with the highlighting
+        if (changesFound >= 2) {
+            HighlightAMove(origin, destination);
+        }
     }
 
     // Highlights a move given the origin and destination
@@ -363,11 +427,6 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
                 System.out.println(row + "" + col + board.IsSquareOccupied(model_row, col));
-                if (board.IsSquareOccupied(model_row, col)) {
-                    System.out.println(board.GetSquareResident(model_row, col).GetRow() + "" + board.GetSquareResident(model_row, col).GetColumn() + " " + board.GetSquareResident(model_row, col).GetFront() + board.GetSquareResident(model_row, col).IsKing() + board.GetSquareResident(model_row, col).IsBotOperated() + "Captured: " + board.GetSquareResident(model_row, col).IsCaptured() + "\t");
-                }
-
-
 
                 String button_ID = "button" + row + col;
                 int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
