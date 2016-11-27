@@ -3,7 +3,11 @@ package com.viveckh.duell;
 import java.io.Serializable;
 
 /**
- * Created by ZCV0LHB on 10/30/2016.
+ * Dice Class
+ * Implements the properties of a dice object used in the game.
+ * The class consists of variables and functions to store and modify a dice’s face values, its coordinates within a game board, its controller (human or computer), its capture status, and whether it is a king.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/27/2016
  */
 public class Dice implements Serializable{
     //CONSTANTS & VARIABLES DECLARATIONS
@@ -29,7 +33,9 @@ public class Dice implements Serializable{
     private int[] counterClockwiseDiceOrder2 = { 3, 1, 4, 6, 3, 1, 4, 6 };
     private int[] counterClockwiseDiceOrder3 = { 2, 3, 5, 4, 2, 3, 5, 4 };
 
-    // Default Constructor
+    /**
+     * DEFAULT CONSTRUCTOR
+     */
     public Dice() {
         row = 0;
         column = 0;
@@ -44,7 +50,13 @@ public class Dice implements Serializable{
         captured = false;
     }
 
-    // Constructor
+    /**
+     * CONSTRUCTOR
+     * @param row The row coordinate of the dice in a board context, 0 by default
+     * @param column The column coordinate of the dice in a board context, 0 by default
+     * @param king true if the dice is a king, false otherwise
+     * @param botOperated true if the dice is bot operated, false otherwise
+     */
     public Dice(int row, int column, boolean king, boolean botOperated) {
         this();     // Calling default constructor
         this.row = row;
@@ -53,6 +65,10 @@ public class Dice implements Serializable{
         SetKing(king);
     }
 
+    /**
+     * COPY CONSTRUCTOR - Initializes a dice object as a copy of an existing dice
+     * @param anotherOne The dice whose copy is to be made
+     */
     public Dice(Dice anotherOne) {
         //System.out.println("anotherone.row : " + anotherOne.row + "" + anotherOne.column + " " + anotherOne.top + "" + anotherOne.left + anotherOne.botOperated + anotherOne.king);
         this.row = anotherOne.row;
@@ -82,24 +98,37 @@ public class Dice implements Serializable{
     public int GetLeft() { return left; }
     public int GetRight() { return right; }
 
-    // Returns true if the dice is Bot Operated
+    /**
+     * Returns true if the dice is Bot Operated
+     * @return true if the dice is bot operated, false otherwise
+     */
     public boolean IsBotOperated() {
         return botOperated;
     }
 
-    // Returns true if the dice is a king
+    /**
+     * Returns true if the dice is a king
+     * @return true if the dice is a king; false otherwise
+     */
     public boolean IsKing() {
         return king;
     }
 
-    // Returns true if a dice is captured
+    /**
+     * Returns true if the dice is captured
+     * @return Returns true if the dice is captured, false otherwise
+     */
     public boolean IsCaptured() {
         return captured;
     }
 
     // MUTATORS
 
-    // Calculates & Sets the beginning orientation with face values of a dice in the home row
+    /**
+     * Calculates & Sets the beginning orientation with face values of a dice in the home row
+     * @param top the top value of the dice
+     * @param isBot true if the dice is bot Operated, false otherwise
+     */
     public void SetBeginningOrientation(int top, boolean isBot) {
         //Values given in program specs
         this.top = top;
@@ -151,7 +180,11 @@ public class Dice implements Serializable{
         }
     }
 
-    // Calculates & Sets the remaining sides of a dice given the Top-left or Top-Right sides
+    /**
+     * Calculates & Sets the remaining sides of a dice given the Top-left or Top-Right sides
+     * @param arg1 the top value of the dice
+     * @param arg2 Can be left (for computer) or right (for human)
+     */
     public void SetRemainingSides(int arg1, int arg2) {
         // The first parameter is the top, the second one can either be left (for computer) or right (for human)
         bottom = SUM_OF_OPPOSITE_SIDES - arg1;
@@ -213,7 +246,10 @@ public class Dice implements Serializable{
         }
     }
 
-    // Sets the values of faces if the given dice is a king
+    /**
+     * Sets the values of faces if the given dice is a king
+     * @param value true if the dice is to be set as a king
+     */
     public void SetKing(boolean value) {
         king = value;
         if (value) {
@@ -226,23 +262,37 @@ public class Dice implements Serializable{
         }
     }
 
-    // Sets the controller of a dice, pass params as true if botOperated, false if humanOperated
+    /**
+     * Sets the controller of a dice
+     * @param value true if botOperated, false if humanOperated
+     */
     public void SetBotControl(boolean value) {
         botOperated = value;
     }
 
-    // Sets the dice as captured or uncaptured
+    /**
+     * Sets the dice as captured or uncaptured
+     * @param value true if dice is to be set as captured, false otherwise
+     */
     public void SetCaptured(boolean value) {
         captured = value;
     }
 
-    // Sets the dice coordinates
+    /**
+     * Sets the dice coordinates
+     * @param row row coordinate of the dice in a game board
+     * @param column column coordinate of the dice in a game board
+     */
     public void SetCoordinates(int row, int column) {
         this.row = row;
         this.column = column;
     }
 
-    // Increments or decrements a dice row based on given value and the boolean flag
+    /**
+     * Increments or decrements a dice row based on given value and the boolean flag
+     * @param value value to increment or decrement the row of the dice by
+     * @param increment true if row is to be incremented, false if it is to be decremented
+     */
     public void SetRow(int value, boolean increment) {
         if (increment && (row + value) < 8) {
             row += value;
@@ -252,7 +302,11 @@ public class Dice implements Serializable{
         }
     }
 
-    // Increments or decrements a dice column based on given value and the boolean flag
+    /**
+     * Increments or decrements a dice column based on given value and the boolean flag
+     * @param value value to increment or decrement the column of the dice by
+     * @param increment true if column is to be incremented, false if it is to be decremented
+     */
     public void SetColumn(int value, boolean increment) {
         if (increment && (column + value) < 9) {
             column += value;
@@ -262,32 +316,50 @@ public class Dice implements Serializable{
         }
     }
 
-    // Sets the top Value of a dice
+    /**
+     * Sets the top Value of a dice
+     * @param value top value of the dice
+     */
     public void SetTop(int value) {
         top = value;
     }
 
-    // Sets the bottom Value of a dice
+    /**
+     * Sets the bottom Value of a dice
+     * @param value bottom value of the dice
+     */
     public void SetBottom(int value) {
         bottom = value;
     }
 
-    // Sets the front Value of a dice
+    /**
+     * Sets the front Value of a dice
+     * @param value front value of the dice
+     */
     public void SetFront(int value) {
         front = value;
     }
 
-    // Sets the rear Value of a dice
+    /**
+     * Sets the rear Value of a dice
+     * @param value rear value of the dice
+     */
     public void SetRear(int value) {
         rear = value;
     }
 
-    // Sets the left Value of a dice
+    /**
+     * Sets the left Value of a dice
+     * @param value left value of the dice
+     */
     public void SetLeft(int value) {
         left = value;
     }
 
-    // Sets the right Value of a dice
+    /**
+     * Sets the right Value of a dice
+     * @param value Right value of the dice
+     */
     public void SetRight(int value) {
         right = value;
     }

@@ -3,7 +3,10 @@ package com.viveckh.duell;
 import java.util.Arrays;
 
 /**
- * Created by ZCV0LHB on 10/31/2016.
+ * Computer Class
+ * Implements Computer strategies to evaluate, prioritize, select and initiate the best move on behalf of the computer.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/27/2016
  */
 public class Computer extends Player {
     // CONSTANTS, VARIABLES AND OBJECT DECLARATIONS
@@ -15,7 +18,9 @@ public class Computer extends Player {
     private Square ownKingSquare, ownKeySquare;
     private Square opponentKingSquare, opponentKeySquare;
 
-    //Default Constructor
+    /**
+     * DEFAULT CONSTRUCTOR - Initializes the local copies of dice arrays needed for move calculations, sets help mode off.
+     */
     public Computer() {
         helpModeOn = false;
         //Initializing dice array lists
@@ -25,7 +30,12 @@ public class Computer extends Player {
         }
     }
 
-    // Prioritizes, Calculates and makes the proper move for Computer on its turn
+    /**
+     * Prioritizes, Calculates and makes the proper move for Computer on its turn
+     * @param board The board in context where the move needs to be made
+     * @param helpModeOn true if user is seeking for help using computer's algorithm; false otherwise
+     * @return true if a move was made successfully; false otherwise
+     */
     public boolean Play(Board board, boolean helpModeOn) {
         this.helpModeOn = helpModeOn;
         printNotifications = false;
@@ -210,11 +220,17 @@ public class Computer extends Player {
                 return true;
             }
         }
+        //It won't ever come to this, but return true anyway
         return true;
     }
 
-
-    // Attempts to block the path of an opponent who is a potential threat; create duplicates of Dice and Square function params
+    /**
+     * Attempts to block the path of an opponent who is a potential threat; create duplicates of Dice and Square function params
+     * @param hostileOne The hostile die
+     * @param victim The square which is a potential victim of the hostile die
+     * @param board The game board in context
+     * @return true if a blocking move was successfully made, false otherwise
+     */
     private boolean TryBlockingAttack(Dice hostileOne, Square victim, Board board) {
         // Duplicating some function params to prevent the modification of original reference
         Dice hostileDice = new Dice(hostileOne);
@@ -251,7 +267,13 @@ public class Computer extends Player {
         return false;
     }
 
-    // Finds a co-ordinate to place blocking dice on the vertical route
+    /**
+     * Finds a co-ordinate to place blocking dice on the vertical route, and makes the move if possible
+     * @param hostileDice The hostile die that is a potential threat
+     * @param squareToProtect The square that needs protection
+     * @param board The game board in context
+     * @return True if a blocking point was found along the vertical path and a move was successfully made; false otherwise
+     */
     private boolean FindBlockPointVertically(Dice hostileDice, Square squareToProtect, Board board) {
         do {
             //Bump up/down the coordinate to check first
@@ -274,7 +296,13 @@ public class Computer extends Player {
         return false;
     }
 
-    // Finds a co-ordinate to place blocking dice on the lateral route
+    /**
+     * Finds a co-ordinate to place blocking dice on the lateral route, and makes the move if possible
+     * @param hostileDice The hostile die that is a potential threat
+     * @param squareToProtect The square that needs protection
+     * @param board The game board in context
+     * @return True if a blocking point was found along the lateral path and a move was successfully made; false otherwise
+     */
     private boolean FindBlockPointLaterally(Dice hostileDice, Square squareToProtect, Board board) {
         do {
             //Bump up/down the coordinate to check first
@@ -297,8 +325,12 @@ public class Computer extends Player {
         return false;
     }
 
-
-    // Tries capturing a hostile opponent who is a potential threat; create duplicate copy of dice function param to prevent original modification
+    /**
+     * Tries capturing a hostile opponent who is a potential threat; create duplicate copy of dice function param to prevent original modification
+     * @param hostileOne The hostile die that is a potential threat
+     * @param board The game board in context
+     * @return true if the hostile opponent can be captured; false otherwise
+     */
     private boolean TryCapturingTheHostileOpponent(Dice hostileOne, Board board) {
         //Duplicating function params to prevent modification of original params
         Dice hostileDice = new Dice(hostileOne);
@@ -314,8 +346,12 @@ public class Computer extends Player {
         return false;
     }
 
-
-    // Tries moving the king to a secure position; create duplicate copy of Square king function param for modification
+    /**
+     * Tries moving the king to a secure position; create duplicate copy of Square king function param for modification
+     * @param king The king dice that needs security
+     * @param board The game board in context
+     * @return true if king can be moved to a secure location; false otherwise
+     */
     private boolean TryMovingKing(Square king, Board board) {
         Square kingSquare = new Square(king);
 
@@ -365,7 +401,12 @@ public class Computer extends Player {
         return false;
     }
 
-    // Tries protecting a dice under threat; create duplicate copy of Square function param for modification
+    /**
+     * Tries protecting a dice under threat; create duplicate copy of Square function param for modification
+     * @param potentialVictim The square whose resident needs to be checked for potential vulnerability
+     * @param board The game board in context
+     * @return true if the dice can be protected; false otherwise
+     */
     private boolean ProtectTheDice(Square potentialVictim, Board board) {
         //Making duplicate copies of necessary function params for modification
         Square squareAtRisk = new Square(potentialVictim);
@@ -387,7 +428,12 @@ public class Computer extends Player {
         return false;
     }
 
-    // Checks if a given square is at risk from opponent dices; create duplicate copies of function param
+    /**
+     * Checks if a given square is at risk from opponent dices; create duplicate copies of function param
+     * @param potentialVictim The square whose resident needs to be checked for potential vulnerability
+     * @param gameBoard The game board in context
+     * @return true if the resident in the square is in danger; false otherwise
+     */
     private boolean IsInDanger(Square potentialVictim, Board gameBoard) {
         //Making duplicate copies of function params that were supposed to be passed by value
         Square squareAtRisk = new Square(potentialVictim);

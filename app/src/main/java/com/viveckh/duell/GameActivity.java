@@ -330,7 +330,7 @@ public class GameActivity extends AppCompatActivity {
         Animation animation = new AlphaAnimation(1, 0);     // Change alpha from fully visible to invisible
         animation.setDuration(200); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(6); // Repeat animation infinitely
+        animation.setRepeatCount(12); // Repeat animation infinitely
         animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 
         // Get the views to highlight and start animation

@@ -3,28 +3,37 @@ package com.viveckh.duell;
 import java.io.Serializable;
 
 /**
- * Created by ZCV0LHB on 10/30/2016.
+ * Board Class
+ * Initializes and maintains a game board of squares and player dices.
+ * It consists of functions to initialize a board, retrieve the contents at different squares within the board, check and set the occupancy of these squares that comprise the game board.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/29/2016
  */
 public class Board implements Serializable{
-    // The gameboard Array
+
+    //VARIABLES
+    // The gameboard multi-dimensional Array
     private Square[][] gameBoard = new Square[8][9];
 
     // Top values of dice at home row
     private int[] startingTopValuesOfDices = { 5, 1, 2, 6, 1, 6, 2, 1, 5 };
 
-    // VARIABLES
-    // ATTENTION: These arrays should be private/protected but accessible from elsewhere at the same time
+    // Collection of Player dice. These arrays should be private/protected but accessible from elsewhere at the same time
     public Dice[] humans = new Dice[9];
     public Dice[] bots = new Dice[9];
 
-    // DEFAULT CONSTRUCTOR
+    /**
+     * DEFAULT CONSTRUCTOR - Sets up a board with the player dices in their respective spots
+     */
     public Board() {
 
         // Arranging the initial orientation of the dices in the board
         for (int index = 0; index < 9; index++) {
+
             //initializing all the player dices
             humans[index] = new Dice();
             bots[index] = new Dice();
+
             //Supplying the top values since the rear value is 3 by default
             if (index == 4) {
                 // Setting the kings
@@ -46,14 +55,14 @@ public class Board implements Serializable{
 
                 System.out.println("(" + gameBoard[currentRow][currentCol].GetRow() + ", " + gameBoard[currentRow][currentCol].GetColumn() + ")\t");
 
-                //Humans Home Row
+                //Setting Humans Home Row
                 if (currentRow == 0) {
                     gameBoard[currentRow][currentCol].SetOccupied(humans[currentCol]);
                     humans[currentCol].SetCoordinates(currentRow, currentCol);
                     humans[currentCol].SetBotControl(false);
                 }
 
-                //Bots Home Row
+                //Settings Bots Home Row
                 if (currentRow == 7) {
                     gameBoard[currentRow][currentCol].SetOccupied(bots[currentCol]);
                     bots[currentCol].SetCoordinates(currentRow, currentCol);
@@ -64,7 +73,10 @@ public class Board implements Serializable{
         }
     }
 
-    // Copy Constructor
+    /**
+     * COPY CONSTRUCTOR - Sets up a board as a copy of some existing board
+     * @param anotherOne The board whose copy is to be made
+     */
     public Board(Board anotherOne) {
         // Copying all the player dice
         for (int index = 0; index < 9; index++) {
@@ -102,16 +114,19 @@ public class Board implements Serializable{
         }
     }
 
-    // Checks if the condition to end the game has been met
+    /**
+     * Checks if the condition to end the game has been met
+     * @return true if the condition for the game to be over is met; false otherwise.
+     */
     public boolean GameOverConditionMet() {
 
-        //If one of the kings captured
+        //If one of the kings captured, GAME IS OVER
         if (humans[4].IsCaptured() || bots[4].IsCaptured()) {
             System.out.println("in here");
             return true;
         }
 
-        //If the human key square is occupied by the bots King die
+        //If the human key square is occupied by the bots King die, GAME IS OVER
         if (IsSquareOccupied(0, 4)) {
             if (GetSquareResident(0, 4).IsBotOperated()) {
                 if (GetSquareResident(0, 4).IsKing()) {
@@ -120,7 +135,7 @@ public class Board implements Serializable{
             }
         }
 
-        //If the computer key square is occupied by the human King die
+        //If the computer key square is occupied by the human King die, GAME IS OVER
         if (IsSquareOccupied(7, 4)) {
             if (!GetSquareResident(7, 4).IsBotOperated()) {
                 if (GetSquareResident(7, 4).IsKing()) {
@@ -129,11 +144,13 @@ public class Board implements Serializable{
             }
         }
 
-        //If none of the game over conditions are met
+        //If none of the game over conditions are met, game isn't over yet.
         return false;
     }
 
-    // Prints out the indexes of player dice that are still active on the gameboard
+    /**
+     * Prints out the indexes of player dice that are still active on the gameboard; used for testing purposes
+     */
     public void ViewNonCapturedDice() {
         System.out.print("Non Captured Human indexes: ");
         for (int i = 0; i < 9; i++) {
@@ -154,42 +171,80 @@ public class Board implements Serializable{
     }
 
     // SELECTORS
-    // Checks if a square in the gameboard is occupied with dice
+
+    /**
+     * Checks if a square in the gameboard is occupied with dice
+     * @param row The row coordinate of the square to be checked
+     * @param col The column coordinate of the square to be checked
+     * @return true if the square is occupied; false otherwise
+     */
     public boolean IsSquareOccupied(int row, int col) {
         return gameBoard[row][col].IsOccupied();
     }
 
-    // Gets the pointer to the resident die in the square
+    /**
+     * Gets a copy of the resident die in the square
+     * @param row The row coordinate of the square whose resident is to be extracted
+     * @param col The column coordinate of the square whose resident is to be extracted
+     * @return A copy of the dice in the given square
+     */
     public Dice GetSquareResident(int row, int col) {
         return gameBoard[row][col].GetResident();
     }
 
-    // Gets the square in the given co-ordinates of the gameboard
+    /**
+     * Gets a copy of the square in the given co-ordinate of the Board
+     * @param row The row coordinate of the square in the game board
+     * @param col The column coordinate of the square in the game board
+     * @return A copy of the square at the given location in game board
+     */
     public Square GetSquareAtLocation(int row, int col) {
         return gameBoard[row][col];
     }
 
-    // Gets the human King Die in the Gameboard
+    /**
+     * Gets the human King Die in the Board
+     * @return A copy of the Human King Dice
+     */
     public Dice GetHumanKing() {
         return humans[4];
     }
 
-    // Gets the bot king Die in the Gameboard
+    /**
+     * Gets the bot king Die in the Board
+     * @return A copy of the Bot King Dice
+     */
     public Dice GetBotKing() {
         return bots[4];
     }
 
     // MUTATORS
-    // Sets the given square in the gameboard as occupied with the given dice
+
+    /**
+     * Sets the given square in the Board as occupied with the given dice
+     * @param row The row coordinate of the square in the Board
+     * @param col The column coordinate of the square in the Board
+     * @param dice The dice that needs to occupy the given square
+     */
     public void SetSquareOccupied(int row, int col, Dice dice) {
         gameBoard[row][col].SetOccupied(dice);
     }
 
-    // Sets a square vacant from any dice occupancies
+    /**
+     * Sets a square vacant from any dice occupancies
+     * @param row The row coordinate of the square in the Board
+     * @param col The column coordinate of the square in the Board
+     */
     public void SetSquareVacant(int row, int col) {
         gameBoard[row][col].SetVacant();
     }
 
+    /**
+     * Sets the resident of a square at the given coordinate to be captured/uncaptured
+     * @param row The row coordinate of the square in the Board
+     * @param col The column coordinate of the square in the Board
+     * @param value True or False value stating whether the resident dice is to be captured or not
+     */
     public void SetSquareResidentCaptured(int row, int col, boolean value) {
         gameBoard[row][col].SetResidentCaptured(value);
     }
