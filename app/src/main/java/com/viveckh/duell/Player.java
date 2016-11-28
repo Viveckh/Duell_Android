@@ -1,7 +1,11 @@
 package com.viveckh.duell;
 
 /**
- * Created by ZCV0LHB on 10/31/2016.
+ * Player Class
+ * Implements the basic set of strategies for any player like traversing the board and determining path choices, validating and processing moves,
+ * changing dice orientation based on the rolls, capturing and eliminating opponent dices.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/27/2016
  */
 public class Player {
     // VARIABLES & OBJECTS DECLARATIONS
@@ -20,7 +24,9 @@ public class Player {
     protected boolean printStatus;
     protected static boolean printNotifications = true;
 
-    //Default constructor
+    /**
+     * DEFAULT CONSTRUCTOR
+     */
     public Player() {
         pathChoice = 0;
         multiplePathPossible = false;
@@ -30,7 +36,23 @@ public class Player {
         counterColumnsTraversed = 0;
     }
 
-    // Does one up roll of the dice
+    /**
+     * Gets path choice
+     * @return Gets the value of pathChoice variable
+     */
+    protected int GetPathChoice() {
+        return pathChoice;
+    }
+
+    /*
+	// NEW SECTION: THESE FUNCTIONS CAN BE USED TO CHANGE STATES EITHER IN A TEMPORARY OR A PERMANENT GAME BOARD
+	*/
+
+    /**
+     * Does one up roll of the dice
+     * @param dice the dice to be rolled
+     * @param board the board in context
+     */
     protected void RollUp(Dice dice, Board board) {
 
         //if (dice.GetRow() < 7) {}		Put this wrapper around the entire function to validate coordinates
@@ -48,7 +70,6 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
@@ -56,7 +77,11 @@ public class Player {
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
     }
 
-    // Does one down roll of the dice
+    /**
+     * Does one down roll of the dice
+     * @param dice the dice to be rolled
+     * @param board the board in context
+     */
     protected void RollDown(Dice dice, Board board) {
         //if (dice.GetRow() > 0) {}		Put this wrapper around the entire function to validate coordinates
         tempStorage1 = dice.GetFront();
@@ -73,7 +98,6 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
@@ -81,7 +105,11 @@ public class Player {
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
     }
 
-    // Does one left roll of the dice
+    /**
+     * Does one left roll of the dice
+     * @param dice the dice to be rolled
+     * @param board the board in context
+     */
     protected void RollLeft(Dice dice, Board board) {
         // if (dice.GetColumn() > 0) {}		Put this wrapper around the entire function to validate coordinates
         tempStorage1 = dice.GetLeft();
@@ -98,7 +126,6 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
@@ -106,7 +133,11 @@ public class Player {
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
     }
 
-    // Does one right roll of the dice
+    /**
+     * Does one right roll of the dice
+     * @param dice the dice to be rolled
+     * @param board the board in context
+     */
     protected void RollRight(Dice dice, Board board) {
         // if (dice.GetColumn() < 8) {}		Put this wrapper around the entire function to validate coordinates
         tempStorage1 = dice.GetLeft();
@@ -123,7 +154,6 @@ public class Player {
 
         //This capture statement will only be executed at the destination square if path checking is done beforehand
         if (board.GetSquareResident(dice.GetRow(), dice.GetColumn()) != null) {
-            //board.GetSquareResident(dice.GetRow(), dice.GetColumn()).SetCaptured(true);
             board.SetSquareResidentCaptured(dice.GetRow(), dice.GetColumn(), true);
             printStatus = printNotifications ? Notifications.Msg_CapturedAnOpponent() : Notifications.Msg_NoMsg();
         }
@@ -131,7 +161,16 @@ public class Player {
         board.SetSquareOccupied(dice.GetRow(), dice.GetColumn(), dice);
     }
 
-    // Checks if the destination is a valid one; create duplicate copies of function parameters
+    /*
+	// NEW SECTION: THE FOLLOWING FUNCTIONS WILL FORM TEMPORARY PASSED-BY-VALUE GAME OBJECTS AND CHECK THE VALIDITY OF ROUTE/DESTINATION
+	*/
+
+    /**
+     * Checks if the destination is a valid one; create duplicate copies of function parameters
+     * @param origin The dice to be moved
+     * @param dest The destination square
+     * @return true if the destination is valid; false otherwise
+     */
     protected boolean IsValidDestination(Dice origin, Square dest) {
         // Making duplicate copies of function parameters to avoid modifying original reference
         Dice dice = new Dice(origin);
@@ -154,7 +193,13 @@ public class Player {
         return false;
     }
 
-    // Checks the validity of a path to get from origin to destination square; create duplicate copies of function parameters
+    /**
+     * Checks the validity of a path to get from origin to destination square; create duplicate copies of function parameters
+     * @param origin The dice to be moved
+     * @param dest The destination square
+     * @param gameBoard The game board in context
+     * @return true if a valid path is found to the destination, false otherwise
+     */
     protected boolean IsPathValid(Dice origin, Square dest, Board gameBoard) {
         // The temporary dice jumps from one square to the other and checks if it is already occupied
 
@@ -239,7 +284,13 @@ public class Player {
         return true;
     }
 
-    // Returns true if traversal is successful without blockade until the destination row (The passed by reference dice is actually a temporary dice itself), create duplicate copies of dest and gameBoard params
+    /**
+     * Returns true if traversal is successful without blockade until the destination row (The passed by reference dice is actually a temporary dice itself), create duplicate copies of dest and gameBoard params
+     * @param dice The dice to be moved
+     * @param dest The destination square
+     * @param gameBoard The game board in context
+     * @return true if the traversal is successful along the rows until destination row, false otherwise
+     */
     protected boolean TraversedRowsWithoutBlockade(Dice dice, Square dest, Board gameBoard) {
         // Still passed by reference cause in case of a 90 degree turn, we want the dice state preserved to call TraversedColumnsWithoutBlockade
 
@@ -274,7 +325,13 @@ public class Player {
         return true;
     }
 
-    // Returns true if traversal is successful without blockade until the destination column (The passed by reference dice is actually a temporary dice itself), , create duplicate copies of dest and gameBoard params
+    /**
+     * Returns true if traversal is successful without blockade until the destination column (The passed by reference dice is actually a temporary dice itself), create duplicate copies of dest and gameBoard params
+     * @param dice The dice to be moved
+     * @param dest The destination square
+     * @param gameBoard The game board in context
+     * @return true if the traversal is successful along the columns until destination column, false otherwise
+     */
     protected boolean TraversedColumnsWithoutBlockade(Dice dice, Square dest, Board gameBoard) {
         // Making duplicate copies of function parameters to avoid modifying original reference
         Square destination = new Square(dest);
@@ -307,12 +364,35 @@ public class Player {
         return true;
     }
 
-    // Overridden for 'default path = 0' case
+    /*
+	// NEW SECTION: THE FOLLOWING FUNCTIONS WILL ACTUALLY MODIFY THE REAL GAMEBOARD.
+	*/
+
+    /**
+     * Checks the validity of a given move, and performs it on the gameboard if valid [CALLED FOR THE DEFAULT PATH = 0 CASE]
+     * @param startRow The row coordinate of the dice to be moved
+     * @param startCol The column coordinate of the dice to be moved
+     * @param endRow The destination row in board
+     * @param endCol The destination column in board
+     * @param board The game board in context
+     * @param helpModeOn true if the function is being called under Help Mode, false otherwise
+     * @return true if the move is successfully made, false otherwise
+     */
     protected boolean MakeAMove(int startRow, int startCol, int endRow, int endCol, Board board, boolean helpModeOn) {
         return MakeAMove(startRow, startCol, endRow, endCol, board, helpModeOn, 0);
     }
 
-    // Checks the validity of a given move, and performs it on the gameboard if valid
+    /**
+     * Checks the validity of a given move, and performs it on the gameboard if valid
+     * @param startRow The row coordinate of the dice to be moved
+     * @param startCol The column coordinate of the dice to be moved
+     * @param endRow The destination row in board
+     * @param endCol The destination column in board
+     * @param board The game board in context
+     * @param helpModeOn true if the function is being called under Help Mode, false otherwise
+     * @param path 1 if Vertical then Lateral, 2 if Lateral then Vertical
+     * @return true if the move is successfully made, false otherwise
+     */
     protected boolean MakeAMove(int startRow, int startCol, int endRow, int endCol, Board board, boolean helpModeOn, int path) {
         //Check if destination is valid, then if path is valid
         //Then, either make the move or log an error
@@ -381,7 +461,12 @@ public class Player {
         return false;
     }
 
-    // Rolls the dice vertically until it is in the destination row
+    /**
+     * Rolls the dice vertically until it is in the destination row
+     * @param dice The dice to be moved
+     * @param destination The destination square in the board
+     * @param board The game board in context
+     */
     protected void KeepRollingVertically(Dice dice, Square destination, Board board) {
         counterRowsTraversed = 0;
         do {
@@ -396,7 +481,12 @@ public class Player {
         } while (dice.GetRow() != destination.GetRow());
     }
 
-    // Rolls the die laterally until it is in the destination column
+    /**
+     * Rolls the dice vertically until it is in the destination column
+     * @param dice The dice to be moved
+     * @param destination The destination square in the board
+     * @param board The game board in context
+     */
     protected void KeepRollingLaterally(Dice dice, Square destination, Board board) {
         counterColumnsTraversed = 0;
         do {
@@ -409,10 +499,5 @@ public class Player {
                 counterColumnsTraversed--;
             }
         } while (dice.GetColumn() != destination.GetColumn());
-    }
-
-    // Gets path choice
-    protected int GetPathChoice() {
-        return pathChoice;
     }
 }

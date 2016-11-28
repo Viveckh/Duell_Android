@@ -1,18 +1,41 @@
 package com.viveckh.duell;
 
 /**
- * Created by ZCV0LHB on 10/31/2016.
+ * Human Class
+ * Handles the move requests from a human player by performing input validations and processing them to reflect changes in the game board.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/27/2016
  */
 public class Human extends Player {
-    //Default constructor
+
+    /**
+     * DEFAULT CONSTRUCTOR
+     */
     public Human() {}
 
-    // Overridden for the 'default path = 0' case
+    /**
+     * // Validates user's Input, Validates user's move and performs the move as instructed by human player; Overridden for the 'default path = 0' case
+     * @param startRow The row coordinate of the dice to move
+     * @param startCol The column coordinate of the dice to move
+     * @param endRow The destination row in the board
+     * @param endCol The destination column in the board
+     * @param board The game board in context
+     * @return true if the move successful, false otherwise
+     */
     public boolean Play(int startRow, int startCol, int endRow, int endCol, Board board) {
         return Play(startRow, startCol, endRow, endCol, board, 0);
     }
 
-    // Validates user's Input, Validates user's move and performs the move as instructed by human player
+    /**
+     * Validates user's Input, Validates user's move and performs the move as instructed by human player
+     * @param startRow The row coordinate of the dice to move
+     * @param startCol The column coordinate of the dice to move
+     * @param endRow The destination row in the board
+     * @param endCol The destination column in the board
+     * @param board The game board in context
+     * @param path In case of 90 degree turns, 1 if vertical first, 2 if lateral first
+     * @return true if the move is successful, false otherwise
+     */
     public boolean Play(int startRow, int startCol, int endRow, int endCol, Board board, int path) {
         printNotifications = true;
 
@@ -53,7 +76,14 @@ public class Human extends Player {
         }
     }
 
-    // Returns true if any input values are out of bounds, Call before decrementing the input values to match the gameboard array indexes
+    /**
+     * Checks if any input values are out of bounds, Call before decrementing the input values to match the gameboard array indexes
+     * @param startRow The row coordinate of the dice to move
+     * @param startCol The column coordinate of the dice to move
+     * @param endRow The destination row in the board
+     * @param endCol The destination column in the board
+     * @return true if any of the coordinates are out of bounds, false otherwise
+     */
     public boolean IndexOutOfBounds(int startRow, int startCol, int endRow, int endCol) {
         if (startRow < 0 || startRow >= 8) {
             return true;

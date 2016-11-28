@@ -8,7 +8,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 
 /**
- * Created by ZCV0LHB on 11/7/2016.
+ * Serializer Class
+ * Contains necessary member functions to serialize or restore a tournament to and from a text file.
+ * Author: Vivek Pandey
+ * Last Modified on: 11/27/2016
  */
 public class Serializer {
     //Declaring variables
@@ -16,7 +19,9 @@ public class Serializer {
     private String fileName;
     private File sdCard;
 
-    //Constructor
+    /**
+     * DEFAULT CONSTRUCTOR
+     */
     public Serializer() {
         fileName = "Duell_LastGameSerialization.txt";
         sdCard = Environment.getExternalStorageDirectory();
@@ -28,7 +33,12 @@ public class Serializer {
         }
     }
 
-    // Writing serialized game state along with tournament history results to file
+    /**
+     * Writing serialized game state along with tournament history results to file
+     * @param fileName the name of the file to which the current game state should be written to
+     * @param board The game board to be written
+     * @return true if the writing is successful; false if any exceptions arise
+     */
     public boolean WriteToFile(String fileName, Board board) {
         // Setup the proper location to write the game state to
         this.fileName = fileName;
@@ -63,7 +73,12 @@ public class Serializer {
         }
     }
 
-    // Reads a serialization file and stores in a multidimensional string array for restoring purposes
+    /**
+     * Reads a serialization file, stores tournament and game state into a multidimensional string array and sets the provided board accordingly
+     * @param fileName The name of the file from which the game and tournament state should be read from
+     * @param board The game board that needs to be set based on the contents from file
+     * @return true if the restoration is successful; false otherwise
+     */
     boolean ReadAFile(String fileName, Board board) {
         System.out.println(fileName);
         File file = new File(sdCard + "/Duell Data", fileName);
@@ -132,7 +147,10 @@ public class Serializer {
         return true;
     }
 
-    // Sets the given board based on the contents of the string array restored by reading file
+    /**
+     * Sets the given board based on the contents of the string array restored by reading file
+     * @param board The game board that needs to be set using the contents in the string multidimensional array
+     */
     private void SetBoard(Board board) {
         // This one is for going through the Human's player dices
         int humanCount = 0;
@@ -234,8 +252,10 @@ public class Serializer {
         }
     }
 
-
-    // Stores the game state in a multidimensional string array.
+    /**
+     * Stores the game state in a multidimensional string array.
+     * @param board The game board whose contents are to be stored into the class's multidimensional array for writing-to-file purposes
+     */
     private void UpdateSerializedBoard(Board board) {
         for (int row = 7; row >= 0; row--) {
             for (int col = 0; col < 9; col++) {
@@ -257,5 +277,4 @@ public class Serializer {
             }
         }
     }
-
 }
