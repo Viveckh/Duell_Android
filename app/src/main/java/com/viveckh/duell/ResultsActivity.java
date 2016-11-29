@@ -12,6 +12,14 @@ import org.w3c.dom.Text;
 import java.sql.ResultSet;
 import java.util.Random;
 
+/**
+ * ResultsActivity Class
+ * This activity displays the results of a game and gets user choice on whether to continue or end a tournament to act accordingly
+ * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
+ * Last Modified on: 11/29/2016
+ */
 public class ResultsActivity extends AppCompatActivity {
 
     //Declaring variables to point to the various view objects
@@ -26,6 +34,9 @@ public class ResultsActivity extends AppCompatActivity {
     Button btn_Quit;
 
     @Override
+    /**
+     * Sets the view to the proper layout, assigns class variables to view objects, initializes onclick listeners on buttons for user input and hides unnecessary view objects
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
@@ -101,12 +112,18 @@ public class ResultsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Hides the user choice to continue to another game, normally used when user decides to end the tournament
+     */
     private void HideUserChoiceToContinue() {
         txtView_AnotherRoundPrompt.setVisibility(View.INVISIBLE);
         btn_PlayAnotherRound.setVisibility(View.INVISIBLE);
         btn_EndTournament.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Does a toss until one side wins, refreshes view with the toss result and sets the necessary values in static Tournament class regarding which side is the next player
+     */
     private void TossToBegin(){
         Random rand = new Random();
         int humanDieToss, botDieToss;
@@ -127,7 +144,5 @@ public class ResultsActivity extends AppCompatActivity {
             txtView_ExtraNotifications.setText("Toss Results:\nComputer: " + botDieToss + "\nHuman: " + humanDieToss + "\nComputer won the toss.");
         }
     }
-
-
 
 }

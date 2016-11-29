@@ -1,3 +1,10 @@
+<!--
+    XML for various strings
+    Author: Vivek Pandey
+    Project: Duell in Java Android
+    Class: CMPS 366
+    Last Modified on: 11/28/2016
+-->
 <resources>
     <string name="app_name">Duell</string>
 </resources>

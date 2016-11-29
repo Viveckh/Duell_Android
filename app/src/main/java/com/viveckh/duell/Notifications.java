@@ -6,6 +6,8 @@ import java.util.Vector;
  * Notifications Class
  * A Static class that consists of a list of inline functions representing various error messages and notifications that arise during the game play.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public final class Notifications {

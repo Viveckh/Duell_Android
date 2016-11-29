@@ -1,3 +1,10 @@
+<!--
+    XML for various dimensions
+    Author: Vivek Pandey
+    Project: Duell in Java Android
+    Class: CMPS 366
+    Last Modified on: 11/28/2016
+-->
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

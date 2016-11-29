@@ -7,6 +7,8 @@ import java.io.Serializable;
  * Implements the properties of a dice object used in the game.
  * The class consists of variables and functions to store and modify a dice’s face values, its coordinates within a game board, its controller (human or computer), its capture status, and whether it is a king.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public class Dice implements Serializable{

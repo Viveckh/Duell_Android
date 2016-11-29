@@ -4,6 +4,8 @@ package com.viveckh.duell;
  * Human Class
  * Handles the move requests from a human player by performing input validations and processing them to reflect changes in the game board.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public class Human extends Player {

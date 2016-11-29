@@ -6,6 +6,8 @@ import java.util.Arrays;
  * Computer Class
  * Implements Computer strategies to evaluate, prioritize, select and initiate the best move on behalf of the computer.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public class Computer extends Player {

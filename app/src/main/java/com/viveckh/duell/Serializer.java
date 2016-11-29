@@ -11,6 +11,8 @@ import java.io.FileReader;
  * Serializer Class
  * Contains necessary member functions to serialize or restore a tournament to and from a text file.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public class Serializer {

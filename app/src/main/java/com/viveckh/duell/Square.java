@@ -6,6 +6,8 @@ import java.io.Serializable;
  * Square Class
  * Stores and maintains the location and occupancy status of a square in the game board. A square can be occupied by a dice object only.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 

@@ -4,6 +4,8 @@ package com.viveckh.duell;
  * Tournament Class
  * Static class that keeps a track of the scores and next player throughout the tournament.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public final class Tournament {

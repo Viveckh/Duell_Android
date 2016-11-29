@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    XML Layout for the GameActivity
+    Author: Vivek Pandey
+    Project: Duell in Java Android
+    Class: CMPS 366
+    Last Modified on: 11/28/2016
+-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:grid="http://schemas.android.com/apk/res-auto"

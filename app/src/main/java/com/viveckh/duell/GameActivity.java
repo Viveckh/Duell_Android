@@ -18,6 +18,14 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+/**
+ * GameActivity Class
+ * This activity serves as the controller class that handles the user actions during the game play, refreshes view, displays notifications and processes serialization requests
+ * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
+ * Last Modified on: 11/28/2016
+ */
 public class GameActivity extends AppCompatActivity {
 
     // Declaring instances of objects and class variables
@@ -40,6 +48,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView txtView_nextPlayer;
 
     @Override
+    /**
+     * Sets the view to the proper layout, receives intent from home activity and sets the board view depending on whether it is a fresh or a restored game
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
@@ -72,8 +83,6 @@ public class GameActivity extends AppCompatActivity {
         human = new Human();
         computer = new Computer();
 
-
-
         // Initialize the radio buttons for user path choices
         radioGrp_PathChoice = (RadioGroup)findViewById(R.id.radioGrp_PathChoice);
         SetRadioGroupListener();
@@ -82,7 +91,77 @@ public class GameActivity extends AppCompatActivity {
         resetButtonAvailability();
     }
 
-    // Processes the user input and passes over to finalize the move
+    /**
+     * Updates the board view based on the current state of the game
+     * @param board The board model that needs to be drawn
+     */
+    public void DrawBoard(Board board) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 9; col++) {
+                // Subtracting from a constant to print an inverted model in the view
+                int model_row = TROWS - row - 1;
+
+                // Determining the text of the button
+                String button_Text = "";
+                if (board.IsSquareOccupied(model_row, col)) {
+                    if (board.GetSquareResident(model_row, col).IsBotOperated()) {
+                        button_Text = "C" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetLeft();
+                    }
+                    else {
+                        button_Text = "H" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetRight();
+                        System.out.print(model_row + "" + col + "\t");
+                    }
+                }
+                System.out.println(row + "" + col + board.IsSquareOccupied(model_row, col));
+
+                //Setting the text in the proper button
+                String button_ID = "button" + row + col;
+                int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
+                Button button = (Button)findViewById(button_ResID);
+                button.setText(button_Text);
+            }
+        }
+        board.ViewNonCapturedDice();
+    }
+
+    /**
+     * Receives user's choice to serialize the game and processes it
+     * @param view button that instigates serialization
+     */
+    public void SerializeGame(View view) {
+        // Display an alert dialog box to confirm the user wants to save and exit the game
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
+        alert_confirm.setMessage("Are you sure you want to save and quit?");
+        alert_confirm.setCancelable(true);
+
+        alert_confirm.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Serializer serializer = new Serializer();
+                        serializer.WriteToFile("GameSave.txt", board);
+                        dialog.cancel();
+                        GameActivity.this.finishAffinity();
+                    }
+                });
+
+        alert_confirm.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        return;
+                    }
+                });
+
+        AlertDialog alertDialog = alert_confirm.create();
+        alertDialog.show();
+    }
+
+    /**
+     * Processes the user input and passes over to finalize the move
+     * @param view button whose click instigates the move
+     */
     public void ProcessUserMove(View view) {
         // Human player can't make moves if it is not his turn
         if (!humanTurn) {
@@ -97,8 +176,6 @@ public class GameActivity extends AppCompatActivity {
             SetAButtonPress(destination, false);
         }
 
-        // Animate the pressed button
-
         // Get the details of the pressed button
         String buttonDetails = view.getTag().toString();
         int btnRow = Integer.parseInt(buttonDetails.split(",")[0]);
@@ -111,7 +188,6 @@ public class GameActivity extends AppCompatActivity {
             startCol = btnColumn;
             hasUserInitiatedMove = true;
             DisplayControllerMessage("Starting coordinate selected!");
-            //Call function to highlight that button
 
             // Set the button viewable in pressed state, so it is easy to identify. Undo when the destination is picked
             SetAButtonPress(origin, true);
@@ -141,7 +217,88 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    //After ProcessUserMove processes the user input, this actually takes the path choice into consideration and finalizes move
+    /**
+     * Processes a move on behalf of the computer
+     * @param view the button whose click instigated this function
+     */
+    public void ProcessComputerMove(View view) {
+        // return if not computer's turn
+        if (!computerTurn) {
+            return;
+        }
+        Notifications.ClearNotificationsList();
+
+        //Save the board before move for using it later to find out which coordinates to highlight based on changes
+        Board boardBeforeMove = new Board(board);
+
+        // Process computer move and draw the board
+        computer.Play(board, false);
+        DrawBoard(board);
+        //For animating the move
+        ShowComputerMove(boardBeforeMove, board);
+
+        //Go to next activity if game over
+        if (board.GameOverConditionMet()) {
+            // ATTENTION: Computer won, go to next activity and display results, and ask if user wants to replay
+            Tournament.IncrementComputerScoreBy(1);
+            AutoRedirectToResults("computer");
+        }
+
+        // Transfer controls to human and disable the buttons for bot.play
+        computerTurn = false;
+        humanTurn = true;
+        Tournament.SetNextPlayer("human");
+        txtView_nextPlayer.setText("Your Turn");
+        DisplayBotMessages();
+        resetButtonAvailability();
+    }
+
+    /**
+     * Generates an optimal move for the user using computer's algorithm
+     * @param view the button whose click instigated this function
+     */
+    public void TurnHelpModeOn(View view) {
+        if (humanTurn) {
+            Notifications.ClearNotificationsList();
+            Notifications.Msg_HelpModeOn();
+            computer.Play(board, true);
+            DisplayBotMessages();
+        }
+    }
+
+    /**
+     * Displays bot messages that have accumulated in the notification vector so far
+     */
+    public void DisplayBotMessages() {
+        // If the msg vector is not empty, print out the msges that have been stored in it
+        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
+        String msgToDisplay;
+        if (!Notifications.GetNotificationsList().isEmpty()) {
+            msgToDisplay = Notifications.GetNotificationsList().toString()
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "");
+            txtView_BotMessages.setText(msgToDisplay);
+        }
+        else {
+            msgToDisplay = "No messages to display.";
+            txtView_BotMessages.setText(msgToDisplay);
+        }
+    }
+
+    /**
+     * Displays the passed msg in the message board
+     * @param msg The msg that needs to be printed to the message board
+     */
+    public void DisplayControllerMessage(String msg) {
+        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
+        txtView_BotMessages.setText(msg);
+    }
+
+    /**
+     * After ProcessUserMove processes the user input, this actually takes the path choice into consideration and finalizes move
+     * @param pathChoice The path that has been chosen. 0 indicates no preference, 1 indicates vertical-first, 2 indicates lateral-first
+     */
     private void FinalizeUserMove(int pathChoice) {
         // PathChoice 0 indicates no preference, 1 indicates vertical-first, and 2 indicates lateral-first
 
@@ -173,6 +330,9 @@ public class GameActivity extends AppCompatActivity {
         // Hide the path choice radiobuttons no matter whether the move is successful or not
     }
 
+    /**
+     * Setting the radio group listener to listen for path selections in case of a 90 degree turn
+     */
     private void SetRadioGroupListener() {
         radioGrp_PathChoice.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -189,78 +349,37 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    // Processes the move of a computer
-    public void ProcessComputerMove(View view) {
-        // return if not computer's turn
-        if (!computerTurn) {
-            return;
-        }
-        Notifications.ClearNotificationsList();
+    /**
+     * Highlights a move given the origin and destination
+     * @param origin the view representing the origin of the move
+     * @param destination the view representing the destination of the move
+     */
+    private void HighlightAMove(View origin, View destination) {
+        // Unpress buttons if they were pressed earlier for easy identification purposes
+        SetAButtonPress(origin, false);
+        SetAButtonPress(destination, false);
 
-        //Save the board before move for using it later to find out which coordinates to highlight based on changes
-        Board boardBeforeMove = new Board(board);
+        // Prepare the animation settings
+        Animation animation = new AlphaAnimation(1, 0);     // Change alpha from fully visible to invisible
+        animation.setDuration(200); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(12); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
 
-        // Process computer move and draw the board
-        computer.Play(board, false);
-        DrawBoard(board);
-        ShowComputerMove(boardBeforeMove, board);
+        // Get the views to highlight and start animation
+        Button startPoint = (Button)findViewById(origin.getId());
+        Button endPoint = (Button)findViewById(destination.getId());
 
-        //Go to next activity if game over
-        if (board.GameOverConditionMet()) {
-            // ATTENTION: Computer won, go to next activity and display results, and ask if user wants to replay
-            Tournament.IncrementComputerScoreBy(1);
-            AutoRedirectToResults("computer");
-        }
-
-        // Transfer controls to human and disable the buttons for bot.play
-        computerTurn = false;
-        humanTurn = true;
-        Tournament.SetNextPlayer("human");
-        txtView_nextPlayer.setText("Your Turn");
-        DisplayBotMessages();
-        resetButtonAvailability();
+        // Start animation
+        startPoint.startAnimation(animation);
+        endPoint.startAnimation(animation);
     }
 
-    //Generates an optimal move for the user using computer's algorithm
-    public void TurnHelpModeOn(View view) {
-        if (humanTurn) {
-            Notifications.ClearNotificationsList();
-            Notifications.Msg_HelpModeOn();
-            computer.Play(board, true);
-            DisplayBotMessages();
-        }
-    }
-
-    // Simulates a button press given the view
-    private void SetAButtonPress(View view, boolean state) {
-        Button button = (Button) findViewById(view.getId());
-        if (state) {
-            button.setBackgroundColor(Color.BLUE);
-        }
-        else {
-            button.setBackgroundResource(R.drawable.button_gameboard);
-        }
-    }
-
-    //Resets the various button availability in the view depending on whose turn it is
-    private void resetButtonAvailability() {
-        Button btn_BotPlay = (Button)findViewById(R.id.btn_BotPlay);
-        Button btn_Help = (Button)findViewById(R.id.btn_Help);
-
-        if (humanTurn) {
-            btn_Help.setVisibility(View.VISIBLE);
-            btn_BotPlay.setVisibility(View.INVISIBLE);
-        }
-        if (computerTurn) {
-            btn_Help.setVisibility(View.INVISIBLE);
-            btn_BotPlay.setVisibility(View.VISIBLE);
-        }
-        //Hide the radiobuttons for choosing path no matter what. It will be turned on only in special circumstance
-        radioGrp_PathChoice.clearCheck();
-        radioGrp_PathChoice.setVisibility(View.INVISIBLE);
-    }
-
-    // Finds out how the computer changed the board after its move and highligts the move it made
+    /**
+     * Finds out how the computer changed the board after its move and highlights the move it made
+     * @param initialBoard Board before the move was made
+     * @param finalBoard Board after the move was made
+     */
     private void ShowComputerMove(Board initialBoard, Board finalBoard) {
         int changesFound = 0;
 
@@ -294,11 +413,10 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
 
-                //Find where changes have taken place and set them to either origin or destination
                 //System.out.println("INITIAL RESIDENT: " + resident_Initial);
                 //System.out.println("FINAL RESIDENT: " + resident_Final);
 
-                //Set the class variables of origin and destination
+                //Find where changes have taken place and set them to either origin or destination
                 if (!resident_Initial.equals(resident_Final)) {
                     String button_ID = "button" + row + col;
                     int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
@@ -320,61 +438,46 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // Highlights a move given the origin and destination
-    private void HighlightAMove(View origin, View destination) {
-        // Unpress buttons if they were pressed earlier for easy identification purposes
-        SetAButtonPress(origin, false);
-        SetAButtonPress(destination, false);
-
-        // Prepare the animation settings
-        Animation animation = new AlphaAnimation(1, 0);     // Change alpha from fully visible to invisible
-        animation.setDuration(200); // duration - half a second
-        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(12); // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
-
-        // Get the views to highlight and start animation
-        Button startPoint = (Button)findViewById(origin.getId());
-        Button endPoint = (Button)findViewById(destination.getId());
-
-        /*
-        // Setting listener to make main thread wait until animation is over
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                startPoint.setVisibility(View.VISIBLE);
-            }
-        });
-        */
-
-       // Start animation
-        startPoint.startAnimation(animation);
-        endPoint.startAnimation(animation);
-    }
-
-    public void DisplayBotMessages() {
-        // If the msg vector is not empty, print out the msges that have been stored in it
-        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
-        String msgToDisplay;
-        if (!Notifications.GetNotificationsList().isEmpty()) {
-            msgToDisplay = Notifications.GetNotificationsList().toString()
-                    .replace(",", "")
-                    .replace("[", "")
-                    .replace("]", "");
-            txtView_BotMessages.setText(msgToDisplay);
+    /**
+     * Simulates a button press/unpress given the view
+     * @param view the button that needs to be pressed/unpressed
+     * @param state true if view needs to be pressed, false if it needs to be unpressed
+     */
+    private void SetAButtonPress(View view, boolean state) {
+        Button button = (Button) findViewById(view.getId());
+        if (state) {
+            button.setBackgroundColor(Color.BLUE);
         }
         else {
-            msgToDisplay = "No messages to display.";
-            txtView_BotMessages.setText(msgToDisplay);
+            button.setBackgroundResource(R.drawable.button_gameboard);
         }
     }
 
-    public void DisplayControllerMessage(String msg) {
-        TextView txtView_BotMessages = (TextView) findViewById(R.id.txtView_BotMessages);
-        txtView_BotMessages.setText(msg);
+    /**
+     * Resets the various button availability in the view depending on whose turn it is
+     */
+    private void resetButtonAvailability() {
+        Button btn_BotPlay = (Button)findViewById(R.id.btn_BotPlay);
+        Button btn_Help = (Button)findViewById(R.id.btn_Help);
+
+        if (humanTurn) {
+            btn_Help.setVisibility(View.VISIBLE);
+            btn_BotPlay.setVisibility(View.INVISIBLE);
+        }
+        if (computerTurn) {
+            btn_Help.setVisibility(View.INVISIBLE);
+            btn_BotPlay.setVisibility(View.VISIBLE);
+        }
+        //Hide the radiobuttons for choosing path no matter what. It will be turned on only in special circumstance
+        radioGrp_PathChoice.clearCheck();
+        radioGrp_PathChoice.setVisibility(View.INVISIBLE);
     }
 
-    //Calls a timer to wait before automatically redirecting to the results activity
+
+    /**
+     * Calls a timer to wait before automatically redirecting to the results activity
+     * @param winner whoever wins the game; "human" or "computer"
+     */
     private void AutoRedirectToResults(String winner) {
         //Disable the entire view first to prevent user manipulation
         GridLayout layout = (GridLayout) findViewById(R.id.boardGrid);
@@ -406,65 +509,5 @@ public class GameActivity extends AppCompatActivity {
             }
         };
         timer.start();
-    }
-
-    // Updates the board view based on the current state of the game
-    public void DrawBoard(Board board) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 9; col++) {
-                // Subtracting from a constant to print an inverted model in the view
-                int model_row = TROWS - row - 1;
-
-                // Determining the text of the button
-                String button_Text = "";
-                if (board.IsSquareOccupied(model_row, col)) {
-                    if (board.GetSquareResident(model_row, col).IsBotOperated()) {
-                        button_Text = "C" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetLeft();
-                    }
-                    else {
-                        button_Text = "H" + board.GetSquareResident(model_row, col).GetTop() + board.GetSquareResident(model_row, col).GetRight();
-                        System.out.print(model_row + "" + col + "\t");
-                    }
-                }
-                System.out.println(row + "" + col + board.IsSquareOccupied(model_row, col));
-
-                String button_ID = "button" + row + col;
-                int button_ResID = getResources().getIdentifier(button_ID, "id", getPackageName());
-                Button button = (Button)findViewById(button_ResID);
-                button.setText(button_Text);
-            }
-        }
-        board.ViewNonCapturedDice();
-    }
-
-    // Serialize game
-    public void SerializeGame(View view) {
-        // Display an alert dialog box to confirm the user wants to save and exit the game
-        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
-        alert_confirm.setMessage("Are you sure you want to save and quit?");
-        alert_confirm.setCancelable(true);
-
-        alert_confirm.setPositiveButton(
-                "Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Serializer serializer = new Serializer();
-                        serializer.WriteToFile("GameSave.txt", board);
-                        dialog.cancel();
-                        GameActivity.this.finishAffinity();
-                    }
-                });
-
-        alert_confirm.setNegativeButton(
-                "No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                        return;
-                    }
-                });
-
-        AlertDialog alertDialog = alert_confirm.create();
-        alertDialog.show();
     }
 }

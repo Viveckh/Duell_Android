@@ -7,6 +7,8 @@ import java.io.Serializable;
  * Initializes and maintains a game board of squares and player dices.
  * It consists of functions to initialize a board, retrieve the contents at different squares within the board, check and set the occupancy of these squares that comprise the game board.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/29/2016
  */
 public class Board implements Serializable{

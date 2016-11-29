@@ -5,6 +5,8 @@ package com.viveckh.duell;
  * Implements the basic set of strategies for any player like traversing the board and determining path choices, validating and processing moves,
  * changing dice orientation based on the rolls, capturing and eliminating opponent dices.
  * Author: Vivek Pandey
+ * Project: Duell in Java Android
+ * Class: CMPS 366
  * Last Modified on: 11/27/2016
  */
 public class Player {
