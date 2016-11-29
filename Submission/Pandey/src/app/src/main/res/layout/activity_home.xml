@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    XML Layout for the HomeActivity
+    Author: Vivek Pandey
+    Project: Duell in Java Android
+    Class: CMPS 366
+    Last Modified on: 11/28/2016
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blue_wallpaper"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.viveckh.duell.HomeActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Duell Game"
+        android:textSize="50dp"
+        android:id="@+id/txtView_GameName"
+        android:layout_marginTop="105dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_RestoreFromFile"
+        android:text="Restore From Files Below"
+        android:textSize="30dp"
+        android:layout_marginTop="58dp"
+        android:layout_below="@+id/txtView_GameName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="63dp"
+        android:layout_marginStart="63dp"
+        android:clickable="false"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Game"
+        android:id="@+id/btn_StartNewGame"
+        android:textSize="30dp"
+        android:onClick="StartNewGame"
+        android:layout_alignTop="@+id/btn_RestoreFromFile"
+        android:layout_alignRight="@+id/txtView_TossResults"
+        android:layout_alignEnd="@+id/txtView_TossResults" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/txtView_TossResults"
+        android:layout_marginTop="75dp"
+        android:text="Notifications will be displayed here..."
+        android:layout_below="@+id/btn_StartNewGame"
+        android:layout_alignRight="@+id/btn_ProceedToGame"
+        android:layout_alignEnd="@+id/btn_ProceedToGame" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proceed to Game"
+        android:id="@+id/btn_ProceedToGame"
+        android:textSize="30dp"
+        android:onClick="ProceedToGame"
+        android:layout_marginBottom="101dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="77dp"
+        android:layout_marginEnd="77dp" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView_SerializationFiles"
+        android:layout_alignLeft="@+id/btn_RestoreFromFile"
+        android:layout_alignStart="@+id/btn_RestoreFromFile"
+        android:layout_alignRight="@+id/btn_RestoreFromFile"
+        android:layout_alignEnd="@+id/btn_RestoreFromFile"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/txtView_TossResults"
+        android:choiceMode="singleChoice"
+        android:textAlignment="center"/>
+
+</RelativeLayout>

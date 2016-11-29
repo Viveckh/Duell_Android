@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    XML Layout for the ResultsActivity
+    Author: Vivek Pandey
+    Project: Duell in Java Android
+    Class: CMPS 366
+    Last Modified on: 11/28/2016
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/blue_wallpaper"
+    tools:context="com.viveckh.duell.ResultsActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Game Winner"
+        android:id="@+id/txtView_GameWinner"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="102dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Tournament Scores"
+        android:id="@+id/txtView_TournamentScores"
+        android:layout_marginLeft="74dp"
+        android:layout_marginStart="74dp"
+        android:layout_alignTop="@+id/btn_Proceed"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Do you want to play another round?"
+        android:id="@+id/txtView_AnotherRoundPrompt"
+        android:layout_below="@+id/txtView_GameWinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO"
+        android:id="@+id/btn_EndTournament"
+        android:layout_below="@+id/txtView_AnotherRoundPrompt"
+        android:layout_alignRight="@+id/txtView_AnotherRoundPrompt"
+        android:layout_alignEnd="@+id/txtView_AnotherRoundPrompt"
+        android:layout_marginTop="37dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quit"
+        android:id="@+id/btn_Quit"
+        android:layout_marginBottom="75dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YES"
+        android:id="@+id/btn_PlayAnotherRound"
+        android:layout_alignTop="@+id/btn_EndTournament"
+        android:layout_alignLeft="@+id/txtView_AnotherRoundPrompt"
+        android:layout_alignStart="@+id/txtView_AnotherRoundPrompt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="No additional notifications at the moment..."
+        android:id="@+id/txtView_ExtraNotifications"
+        android:layout_below="@+id/btn_EndTournament"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PROCEED"
+        android:id="@+id/btn_Proceed"
+        android:layout_above="@+id/btn_Quit"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
